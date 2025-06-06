@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Collection</title>
+    <link rel="stylesheet" href="static/styles/main.css">
+</head>
+<body>
+    <header>
+        <h1>Food4All Collection Tools</h1>
+    </header>
+
+    <main>
+
+        <section class="content">
+            <div class="card">
+                <div class="collection-data">
+                    <div class="collection-data-selections">
+                        <div>
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" id="startDate" name="startDate">
+                        </div>
+                        <div>
+                            <label for="endDate">End Date:</label>
+                            <input type="date" id="endDate" name="endDate">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="collectionLocation">Collection Location:</label>
+                        <input type="search" id="collectionLocation" name="collectionLocation">
+                    </div>
+                    <img id="collectionGraph" src="https://intellspot.com/wp-content/uploads/2017/12/bar-chart-example.png">
+                </div>
+            </div>
+            <div class="options">
+                <div class="card darken-hover">
+                    <a href="/submit">
+                        <h3>Submit Collection</h3>
+                    </a>
+                </div>
+                <div class="card darken-hover">
+                    <a href="/collections">
+                        <h3>View Collections</h3>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Food4All Collection - Food4AllBayArea.org</p>
+    </footer>
+</body>
+</html>
