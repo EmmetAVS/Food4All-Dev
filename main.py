@@ -1,10 +1,15 @@
-from flask import Flask
-from flask import render_template
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 
-app = Flask(__name__)
+app = FastAPI()
 
-@app.route("/")
-def index():
-    return render_template("view_collections.html")
-    
-app.run(debug=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def load_view_collections_page(request: Request):
+    return templates.TemplateResponse("view_collections.html", {"request": request})
