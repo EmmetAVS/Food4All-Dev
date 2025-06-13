@@ -1,0 +1,44 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: var(--accent);
+  padding: 0.75rem 1.5rem;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.navbar-item {
+  color: var(--text);
+  text-decoration: none;
+  margin: 0 0.75rem;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  height:100%
+}
+
+.navbar-item:hover {
+    color: #ffcc00;
+}
+
+.profile-icon img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.navbar-pages {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.navbar-pages .navbar-item {
+  margin: 0 1rem;
+}
+
+.navbar-right-buttons {
+  display: flex;
+  align-items: center;
+}

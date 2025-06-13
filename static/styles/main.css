@@ -1,62 +1,20 @@
 html, body {
-    height: 100%;
+    height: 100vh;
     margin: 0;
     display: flex;
     flex-direction: column;
 }
 
-.navbar {
+.main-container {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: center;
-  background-color: #333;
-  padding: 0.75rem 1.5rem;
-  color: white;
-}
-
-.navbar-item {
-  color: white;
-  text-decoration: none;
-  margin: 0 0.75rem;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-  height:100%
-}
-
-.navbar-item:hover {
-    color: #ffcc00;
-}
-
-/* Profile icon section */
-.profile-icon img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
-
-/* Center page links */
-.navbar-pages {
-  display: flex;
-  justify-content: center;
-  flex-grow: 1;
-}
-
-.navbar-pages .navbar-item {
-  margin: 0 1rem;
-}
-
-/* Right-aligned buttons */
-.navbar-right-buttons {
-  display: flex;
-  align-items: center;
+  min-height: 0;
 }
 
 .sidebar-menu {
   width: 220px;
-  height: 100vh;
-  background-color: #2c2c2c;
-  color: white;
+  height: 100%;
+  background-color: var(--accent);
+  color: var(--text);
   display: flex;
   flex-direction: column;
 }
@@ -64,7 +22,7 @@ html, body {
 .menu-title, .menu-options button, .menu-options a {
   padding: 1rem;
   text-decoration: none;
-  color: white;
+  color: var(--text);
   display: block;
   transition: background-color 0.2s;
 }
@@ -88,16 +46,91 @@ html, body {
   display: flex;
 }
 
-.menu-options button, .menu-options a {
+.menu-options button, .menu-options a, .menu-options label{
   all: unset;
   margin-left: 1rem;
-  background-color: #2c2c2c;
+  background-color: var(--accent);
   border: none;
   text-align: left;
   font-size: 1rem;
   display: block;
   cursor: pointer;
   padding: 1rem;
-  color: white;
+  color: var(--text);
   width: 100%;
+}
+
+.menu-options input {
+  margin-left: 1rem;
+  padding: 0.5rem;
+  background-color: var(--accent);
+  color: var(--text);
+  border: 1px solid #444;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: calc(100% - 2.5rem);
+  margin-bottom: 0.1rem;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.images, .list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.images {
+    background-color: var(--background);
+}
+
+.list {
+    background-color: var(--background);
+}
+
+.images::-webkit-scrollbar {
+    display: none;
+}
+
+.list table {
+  text-align: center;
+  color: var(--text);
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 0.5rem;
+}
+
+.table-container {
+  margin-left: 1rem;
+  margin-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  border:1px solid black;
+}
+
+.table-scrollable {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.table-scrollable table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.table-scrollable::-webkit-scrollbar {
+    display: none;
 }
