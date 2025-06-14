@@ -11,5 +11,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
-async def load_view_collections_page(request: Request):
+async def load_home_page(request: Request):
+    return templates.TemplateResponse("view_collections.html", {"request": request})
+
+@app.get("/view", response_class=HTMLResponse)
+async def load_view_page(request: Request):
     return templates.TemplateResponse("view_collections.html", {"request": request})

@@ -3,6 +3,7 @@ html, body {
     margin: 0;
     display: flex;
     flex-direction: column;
+    background-color: var(--background);
 }
 
 .main-container {
@@ -80,7 +81,7 @@ html, body {
     overflow: hidden;
 }
 
-.images, .list {
+.list {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -88,8 +89,37 @@ html, body {
     align-items: center;
 }
 
-.images {
+.charts {
     background-color: var(--background);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    height: 50vh;
+    align-items: stretch;
+}
+
+.charts::-webkit-scrollbar {
+    display: none;
+}
+
+.chart {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    color: var(--text);
+    font-weight: bold;
+    gap: 0.2rem;
+    font-size: 1.2rem;
+}
+
+.chart img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 .list {
@@ -106,7 +136,8 @@ html, body {
 .list-headers {
   flex-shrink: 0;
   margin-top: 1rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
   margin-right: 1rem;
   padding-right: 0.7rem;
   margin-left: 1rem;
@@ -115,10 +146,6 @@ html, body {
   font-weight: bold;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.images::-webkit-scrollbar {
-    display: none;
 }
 
 .list-items {
