@@ -11,7 +11,7 @@ html, body {
 }
 
 .sidebar-menu {
-  width: 220px;
+  width: 15vw;
   height: 100%;
   background-color: var(--accent);
   color: var(--text);
@@ -83,7 +83,6 @@ html, body {
 .images, .list {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -95,42 +94,61 @@ html, body {
 
 .list {
     background-color: var(--background);
+    display: flow;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    color: var(--text);
+    flex: 1;
+    min-height: 0;
+}
+
+.list-headers {
+  flex-shrink: 0;
+  margin-top: 1rem;
+  padding-bottom: 0.5rem;
+  margin-right: 1rem;
+  padding-right: 0.7rem;
+  margin-left: 1rem;
+  border: solid 1px var(--text);
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 .images::-webkit-scrollbar {
     display: none;
 }
 
-.list table {
-  text-align: center;
-  color: var(--text);
-  border-collapse: collapse;
+.list-items {
+    display: grid;
+    flex: 1;
+    grid-template-columns: 1fr;
+    margin: 0 1rem 1rem 1rem;
+    overflow-y: auto;
+    max-height: 30vh;
+    scroll-behavior: smooth;
+    border-bottom: solid 1px var(--text);
 }
 
-th, td {
-  border: 1px solid black;
-  padding: 0.5rem;
+.list-items::-webkit-scrollbar {
+    background-color: var(--accent);
+    color: var(--text);
+    border-right: solid 1px var(--text);
+    width: 0.7rem;
+    border-bottom: solid 1px var(--text);
 }
 
-.table-container {
-  margin-left: 1rem;
-  margin-right: 1rem;
-  display: flex;
-  flex-direction: column;
-  border:1px solid black;
+.list-items::-webkit-scrollbar-thumb {
+    background-color: var(--text);
 }
 
-.table-scrollable {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.table-scrollable table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-}
-
-.table-scrollable::-webkit-scrollbar {
-    display: none;
+.list-item {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  border: solid 1px var(--text);
+  border-bottom: none;
 }
