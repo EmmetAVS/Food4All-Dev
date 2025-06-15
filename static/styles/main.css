@@ -220,8 +220,6 @@ html, body {
   text-decoration: unset;
   background-color: var(--background);
   color: var(--text);
-  border: none;
-  border-radius: 4px;
 }
 
 .modal select {
@@ -230,15 +228,16 @@ html, body {
   text-decoration: unset;
   background-color: var(--background);
   color: var(--text);
-  border: none;
-  border-radius: 4px;
 }
 
 .modal button {
   background-color: var(--background);
   color: var(--text);
-  border: none;
-  border-radius: 4px;;
+}
+
+.modal button, .modal select, .modal input {
+  border: solid 1px var(--border);
+  border-radius: 4px;
 }
 
 input::-webkit-outer-spin-button,
@@ -249,4 +248,38 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+/* For login/signup pages */
+
+.modal-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.modal-footer button {
+    width: 50%;
+    color: var(--text);
+    background-color: var(--background);
+    border: none;
+    cursor: pointer;
+}
+
+.modal-footer a {
+    color: var(--text);
+}
+
+.message-container {
+    display: none;
+    background-color: red;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    border-radius: 8px;
+    border: solid 1px var(--border);
+}
+
+.message {
+    color: var(--text);
+    padding: 0.5rem;
 }

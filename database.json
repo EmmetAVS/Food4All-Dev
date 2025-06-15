@@ -1,0 +1,15 @@
+{
+    "users": {
+        "8d81374aa97d4aa8e2dbd86236ef86605c3388d57ba2524b1754910447a8ecc0": {
+            "username": "aarush",
+            "token": "8d81374aa97d4aa8e2dbd86236ef86605c3388d57ba2524b1754910447a8ecc0",
+            "created": 1750027980.483825,
+            "email": "aarush.shrikanth@gmail.com",
+            "collections": 0,
+            "branch": "",
+            "is_admin": true
+        }
+    },
+    "branches": {},
+    "collections": {}
+}

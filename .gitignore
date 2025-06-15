@@ -1,2 +1,4 @@
 __pycache__/*
 run.cmd
+.env
+database_postgresql.py
