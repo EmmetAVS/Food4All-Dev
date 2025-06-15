@@ -94,9 +94,10 @@ class User:
                 "is_admin": False
             })
 
-            members = db.get(["branches", branch, "members"])
-            members.append(token)
-            db.set(["branches", branch, "members"], members)
+            if branch != "":
+                members = db.get(["branches", branch, "members"])
+                members.append(token)
+                db.set(["branches", branch, "members"], members)
             
             return db.get(["users", token])
 

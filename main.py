@@ -38,11 +38,15 @@ async def startup_event():
     app.state.db = Database("database.json")
 
 @app.get("/", response_class=HTMLResponse)
-async def load_home_page(request: Request):
+async def load_home_page(request: Request, token: Optional[str] = Cookie(None)):
+    if not token or token not in app.state.db.get("users"):
+        return RedirectResponse(url="/login")
     return templates.TemplateResponse("view_collections.html", {"request": request})
 
 @app.get("/view", response_class=HTMLResponse)
-async def load_view_page(request: Request):
+async def load_view_page(request: Request, token: Optional[str] = Cookie(None)):
+    if not token or token not in app.state.db.get("users"):
+        return RedirectResponse(url="/login")
     return templates.TemplateResponse("view_collections.html", {"request": request})
 
 @app.get("/login", response_class=HTMLResponse)
@@ -59,17 +63,17 @@ async def favicon():
 
 #API Endpoints
 @app.post("/api/login")
-async def api_login(request: LoginRequest):
+async def api_login(lr: LoginRequest, request: Request):
     try:
-        user = User.login(request.app.state.db, request.username, request.password)
+        user = User.login(request.app.state.db, lr.username, lr.password)
         return JSONResponse(content={"status": "success", "user": user})
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
     
 @app.post("/api/signup")
-async def api_signup(request: SignupRequest):
+async def api_signup(sr: SignupRequest, request: Request):
     try:
-        user = User.create_user(request.app.state.db, request.username, request.password, request.email, request.branch)
+        user = User.create_user(request.app.state.db, sr.username, sr.password, sr.email, sr.branch)
         return JSONResponse(content={"status": "success", "user": user})
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
@@ -93,11 +97,11 @@ async def api_get_user_info(username: str, request: Request, token: Optional[str
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
 @app.post("/api/create_branch")
-async def api_create_branch(request: CreateBranchRequest, token: Optional[str] = Cookie(None)):
+async def api_create_branch(cbr: CreateBranchRequest, request: Request, token: Optional[str] = Cookie(None)):
     try:
         if not token or not User.is_admin(request.app.state.db, token):
             return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
-        Branch.create_branch(request.app.state.db, request.name, request.acronym)
+        Branch.create_branch(request.app.state.db, cbr.name, cbr.acronym)
         return JSONResponse(content={"status": "success", "message": "Branch created successfully"})
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
@@ -106,8 +110,8 @@ async def api_create_branch(request: CreateBranchRequest, token: Optional[str] =
 async def get_branches(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in request.app.state.db.get("users"):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
-    
-    return JSONResponse(content={"status": "success", "branches": app.state.db.get("branches").keys()})
+
+    return JSONResponse(content={"status": "success", "branches": app.state.db.get("branches")})
 
 @app.get("/api/exec/{code}")
 async def execute(code: str, request: Request, token: Optional[str] = Cookie(None)):

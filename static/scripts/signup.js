@@ -5,6 +5,22 @@ function animateOpenModal(m) {
 
 window.onload = () => {
     animateOpenModal(document.getElementById("modal"));
+
+    fetch("/api/branches")
+        .then(response => response.json()).then(data => {
+            const branchSelect = document.getElementById("branch");
+            console.log(data);
+            for (let branch in data.branches) {
+                const option = document.createElement("option");
+                option.value = branch;
+                option.textContent = branch;
+                branchSelect.appendChild(option);
+            }})
+        .catch(error => {
+            console.log(error);
+            animateMessage("Failed to load branches", "red");
+        }
+    )
 }
 
 function animateMessage(text, color) {
@@ -58,10 +74,10 @@ function signup() {
             response.json().then(data => {
                 const expires = new Date();
                 expires.setDate(expires.getDate() + 7);
-                document.cookie = `token=abc123; path=/; expires=${expires.toUTCString()}`;
+                document.cookie = `token=${data.user.token}; path=/; expires=${expires.toUTCString()}`;
+                console.log(document.cookie);
+                window.location.href = "/view";
             });
-
-            window.location.href = "/view_collections";
         } else {
             response.json().then(data => {
                 animateMessage(data.message || "Login failed", "red");

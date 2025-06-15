@@ -48,10 +48,9 @@ function login() {
             response.json().then(data => {
                 const expires = new Date();
                 expires.setDate(expires.getDate() + 7);
-                document.cookie = `token=abc123; path=/; expires=${expires.toUTCString()}`;
+                document.cookie = `token=${data.user.token}; path=/; expires=${expires.toUTCString()}`;
+                window.location.href = "/view";
             });
-
-            window.location.href = "/view_collections";
         } else {
             response.json().then(data => {
                 animateMessage(data.message || "Login failed", "red");

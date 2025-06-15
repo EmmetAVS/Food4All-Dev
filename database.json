@@ -1,10 +1,10 @@
 {
     "users": {
-        "8d81374aa97d4aa8e2dbd86236ef86605c3388d57ba2524b1754910447a8ecc0": {
-            "username": "aarush",
-            "token": "8d81374aa97d4aa8e2dbd86236ef86605c3388d57ba2524b1754910447a8ecc0",
-            "created": 1750027980.483825,
-            "email": "aarush.shrikanth@gmail.com",
+        "cb45cdf4db94db67a7e6ee24fd2d78a52af60b72fad9e88d70fa67bfcaed0c42": {
+            "username": "admin",
+            "token": "cb45cdf4db94db67a7e6ee24fd2d78a52af60b72fad9e88d70fa67bfcaed0c42",
+            "created": 1750030507.3505223,
+            "email": "admin@food4allbayarea.org",
             "collections": 0,
             "branch": "",
             "is_admin": true
