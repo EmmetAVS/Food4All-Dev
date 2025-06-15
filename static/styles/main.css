@@ -37,6 +37,24 @@ html, body {
   flex-direction: column;
 }
 
+.menu-section button {
+  all: unset;
+  background: var(--accent);
+  padding: 0;
+  padding: 1rem;
+  text-decoration: none;
+  color: var(--text);
+  display: block;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.menu-section button:hover {
+  cursor: grab;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .menu-section {
     overflow-y:scroll;
     scrollbar-width: none;
@@ -178,4 +196,20 @@ html, body {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   border: solid 1px var(--text);
   border-bottom: none;
+}
+
+.list-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: grab;
+}
+
+.modal {
+  background-color: var(--accent);
+  color: var(--text);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
