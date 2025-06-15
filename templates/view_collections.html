@@ -70,9 +70,11 @@
             </div>
             <div class="list">
                 <div class="list-headers">
-                    <div class="list-header-item">Name</div>
+                    <div class="list-header-item">Collected By</div>
                     <div class="list-header-item">Branch</div>
                     <div class="list-header-item">Date</div>
+                    <div class="list-header-item">Source</div>
+                    <div class="list-header-item">Quantity</div>
                     <div class="list-header-item">Status</div>
                 </div>
                 <div class="list-items">
@@ -157,8 +159,25 @@
                     <h2>Submit Collection</h2>
                     <button class="close-button" onclick="modalClose('ignore')">X</button>
                 </div>
-                <input id="ingredientName" type="text"></input>
-                <input id="ingredientQuantity" type="number"></input>
+                <label for="collectedBy">Collected By:</label>
+                <input id="collectedBy" type="text"></input>
+                <label for="branch">Branch:</label>
+                <select id="branch">
+                    <option value="lahs">LAHS</option>
+                    <option value="other">Other</option>
+                </select>
+                <label for="date">Date Collected:</label>
+                <input id="date" type="date"></input>
+                <label for="source">Source:</label>
+                <input id="source" type="text"></input>
+                <label for="quantity">Quantity (lbs):</label>
+                <input id="quantity" type="number"></input>
+                <label for="status">Status:</label>
+                <select id="status">
+                    <option value="donated">Donated</option>
+                    <option value="collected">Collected</option>
+                    <option value="scheduled">Planned</option>
+                </select>
                 <button id="modalSubmit" onclick="modalClose('use')">Submit</button>
             </div>
         </div>

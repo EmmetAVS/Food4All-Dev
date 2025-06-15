@@ -28,7 +28,6 @@ function modalClose(str) {
 }
 
 function main() {
-    animateOpenModal(document.getElementById("modal"));
     console.log("View Collections script loaded");
 }
 
