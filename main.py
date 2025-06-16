@@ -75,6 +75,8 @@ async def favicon():
     return RedirectResponse(url="/static/assets/favicon.ico")
 
 #API Endpoints
+
+#Users endpoints
 @app.post("/api/login")
 async def api_login(lr: LoginRequest, request: Request):
     try:
@@ -90,7 +92,7 @@ async def api_signup(sr: SignupRequest, request: Request):
         return JSONResponse(content={"status": "success", "user": user})
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
-    
+
 @app.get("/api/users/{username}")
 async def api_get_user_info(username: str, request: Request, token: Optional[str] = Cookie(None)):
     try:
@@ -109,7 +111,29 @@ async def api_get_user_info(username: str, request: Request, token: Optional[str
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
-@app.post("/api/create_branch")
+@app.get("/api/users/{username}/upgrade")
+async def api_upgrade_user(username: str, request: Request, token: Optional[str] = Cookie(None)):
+    try:
+        db = request.app.state.db
+        if not token or not User.is_admin(db, token):
+            return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
+        
+        for user_info in db.get("users").values():
+            if user_info["username"] == username:
+                user_info["is_admin"] = True
+                db.set(["users", user_info["token"], "is_admin"], True)
+                return JSONResponse(content={"status": "success", "message": f"User {username} upgraded to admin"})
+        
+        return JSONResponse(content={"status": "error", "message": "User not found"}, status_code=404)
+    except Exception as e:
+        return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
+
+@app.get("/api/users/{username}/delete")
+async def api_delete_user(username: str, request: Request, token: Optional[str] = Cookie(None)):
+    
+
+#Branches endpoints
+@app.post("/api/branches/create")
 async def api_create_branch(cbr: CreateBranchRequest, request: Request, token: Optional[str] = Cookie(None)):
     try:
         if not token or not User.is_admin(request.app.state.db, token):
@@ -132,7 +156,7 @@ async def get_collections(request: Request, token: Optional[str] = Cookie(None))
     
     return JSONResponse(content={"status": "success", "collections": collections})
 
-@app.post("/api/create_collection")
+@app.post("/api/collections/create")
 async def create_collection(CCR: CreateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in request.app.state.db.get("users"):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)

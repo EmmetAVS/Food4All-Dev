@@ -24,7 +24,7 @@ function branchCreate() {
     const branchName = document.getElementById("branchName").value;
     const branchAcronym = document.getElementById("branchAcronym").value;
 
-    fetch("/api/create_branch", {
+    fetch("/api/branches/create", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
