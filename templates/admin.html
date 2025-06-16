@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Food4All - Login</title>
+    <link rel="stylesheet" href="static/styles/main.css">
+    <link rel="stylesheet" href="static/styles/navbar.css">
+    <link rel="stylesheet" href="static/styles/globals.css">
+    <link rel="stylesheet" href="static/styles/lib.css">
+    <script src="static/scripts/admin.js"></script>
+</head>
+<body>
+    <div class="navbar" style="z-index: 999;">
+        <div class="profile-icon">
+            <a class="navbar-item" href="account"><img src="static/assets/user_default.png"></a>
+        </div>
+        <div class="navbar-pages">
+            <a class="navbar-item" href="view">View Collections</a>
+        </div>
+        <div class="navbar-right-buttons">
+            <a class="navbar-item" href="settings"><img src="static/assets/settings.png"></a>
+            <a class="navbar-item" href="help"><img src="static/assets/help.png"></a>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="message-container">
+            <div id="message" class="message">Error</div>
+        </div>
+        <div id="content" class="centered-children" style="display: none; width: 100%; height:100%">
+            <div class="modal vertical-container" style="border-radius: 8px; gap: 0.5rem;">
+                <div class="modal-header">
+                    <h2>Admin</h2>
+                </div>
+                <button id="createBranch" onclick='animateOpenModal(document.getElementById("modal"), true);'>Create Branch</button>
+                <label for="admin">Make user admin:</label>
+                <input type="text" id="admin" placeholder="Enter username here">
+                <button id="upgradeUser">Confirm</button>
+                <label for="executeField">Execute Command (Advanced):</label>
+                <input type="text" id="executeField" placeholder="Enter command here">
+                <button id="executeCommand">Execute</button>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+        <div id="modal" class="modal-background centered-children" style="display: none; width: 100%; height:100%">
+            <div class="modal vertical-container" style="border-radius: 8px;">
+                <div class="modal-header">
+                    <h2>Create Branch</h2>
+                    <button class="close-button" onclick="animateCloseModal(document.getElementById('modal'))">X</button>
+                </div>
+                <label for="branchName">Branch Name:</label>
+                <input id="branchName" type="text"></input>
+                <label for="branchAcronym">Branch Acronym:</label>
+                <input id="branchAcronym" type="text"></input>
+                <button id="modalSubmit" onclick="branchCreate()">Submit</button>
+            </div>
+        </div>
+    </div>
+</body>

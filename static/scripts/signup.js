@@ -9,7 +9,10 @@ window.onload = () => {
     fetch("/api/branches")
         .then(response => response.json()).then(data => {
             const branchSelect = document.getElementById("branch");
-            console.log(data);
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "N/A";
+            branchSelect.appendChild(defaultOption);
             for (let branch in data.branches) {
                 const option = document.createElement("option");
                 option.value = branch;

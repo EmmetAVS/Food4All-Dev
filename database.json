@@ -8,8 +8,27 @@
             "collections": 0,
             "branch": "",
             "is_admin": true
+        },
+        "4d3b27b6ba3d97d9c195edf30fed795cf7df33b009c51375a42f5566b4c87e07": {
+            "username": "aarush",
+            "token": "4d3b27b6ba3d97d9c195edf30fed795cf7df33b009c51375a42f5566b4c87e07",
+            "created": 1750047554.3686938,
+            "email": "aarush.shrikanth@gmail.com",
+            "collections": 0,
+            "branch": "",
+            "is_admin": false
         }
     },
-    "branches": {},
+    "branches": {
+        "Los Altos High School": {
+            "name": "Los Altos High School",
+            "created": 1750051566.9187572,
+            "acronym": "LAHS",
+            "members": [
+                "bbb59da3af939f7af5f360f2ceb80a496e3bae1cd87dde426db0ae40677e1c2c"
+            ],
+            "collections": 0
+        }
+    },
     "collections": {}
 }

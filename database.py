@@ -129,6 +129,10 @@ class Branch:
 
     @staticmethod
     def create_branch(db: Database, name: str, acronym: str):
+
+        if not name or not acronym:
+            raise Exception("Branch name and acronym are required")
+
         if name in db.get("branches"):
             raise Exception("Branch already exists")
         else:
@@ -146,7 +150,7 @@ class Collection:
     collectionid1: {
         "id": "collectionid1",
         "created": "timestamp",
-        "submitted_by": "token1",
+        "submitted_by": "username1",
         "branch": "branch1",
         "time": "timestamp",
         "source": "source",
@@ -158,19 +162,23 @@ class Collection:
     @staticmethod
     def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str):
         
-        if status not in ["Donated", "Collected", "Planned"]:
+        if not status or status not in ["Donated", "Collected", "Planned"]:
             raise Exception("Invalid status")
         
-        if branch not in db.get("branches"):
+        if not branch or branch not in db.get("branches"):
             raise Exception("Branch does not exist")
         
-        if token not in db.get("users"):
+        if not token or token not in db.get("users"):
             raise Exception("User does not exist")
         
+        username = db.get(["users", token, "username"])
+        if not username:
+            raise Exception("User does not exist or is not logged in")
+
         collection = {
-            "id": hashlib.sha256((token + branch + str(timestamp) + str(time.time())).encode()).hexdigest(),
+            "id": hashlib.sha256((username + branch + str(timestamp) + str(time.time())).encode()).hexdigest(),
             "created": time.time(),
-            "submitted_by": token,
+            "submitted_by": username,
             "branch": branch,
             "time": timestamp,
             "source": source,

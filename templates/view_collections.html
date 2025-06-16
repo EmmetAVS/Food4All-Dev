@@ -17,7 +17,9 @@
         </div>
         <div class="navbar-pages">
             <button class="navbar-item" onclick="animateOpenModal(document.getElementById('modal'))">Submit</button>
+            {% if is_admin %}
             <a class="navbar-item" href="admin">Admin</a>
+            {% endif %}
         </div>
         <div class="navbar-right-buttons">
             <a class="navbar-item" href="settings"><img src="static/assets/settings.png"></a>

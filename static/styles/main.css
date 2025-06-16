@@ -283,3 +283,20 @@ input[type=number] {
     color: var(--text);
     padding: 0.5rem;
 }
+
+#content {
+    width: 100vw;
+    height: 100vh;
+    z-index: 998;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.modal button {
+  text-align: center;
+  width: 30%;
+  border: solid 1px var(--border);
+  border-radius: 8px;
+}
+

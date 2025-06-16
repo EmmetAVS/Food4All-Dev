@@ -27,6 +27,13 @@ class CreateBranchRequest(BaseModel):
     name: str
     acronym: str
 
+class CreateCollectionRequest(BaseModel):
+    branch: str
+    timestamp: str
+    source: str
+    quantity: int
+    status: str
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -41,13 +48,13 @@ async def startup_event():
 async def load_home_page(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in app.state.db.get("users"):
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("view_collections.html", {"request": request})
+    return templates.TemplateResponse("view_collections.html", {"request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
 
 @app.get("/view", response_class=HTMLResponse)
 async def load_view_page(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in app.state.db.get("users"):
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("view_collections.html", {"request": request})
+    return templates.TemplateResponse("view_collections.html", {"request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
 
 @app.get("/login", response_class=HTMLResponse)
 async def load_login_page(request: Request):
@@ -56,6 +63,12 @@ async def load_login_page(request: Request):
 @app.get("/signup", response_class=HTMLResponse)
 async def load_signup_page(request: Request):
     return templates.TemplateResponse("signup.html", {"request": request})
+
+@app.get("/admin", response_class=HTMLResponse)
+async def load_admin_page(request: Request, token: Optional[str] = Cookie(None)):
+    if not token or token not in app.state.db.get("users") or not User.is_admin(app.state.db, token):
+        return RedirectResponse(url="/view")
+    return templates.TemplateResponse("admin.html", {"request": request, "is_admin": True})
 
 @app.get("/favicon.ico")
 async def favicon():
@@ -107,11 +120,32 @@ async def api_create_branch(cbr: CreateBranchRequest, request: Request, token: O
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
     
 @app.get("/api/branches")
-async def get_branches(request: Request, token: Optional[str] = Cookie(None)):
+async def get_branches(request: Request):
+    return JSONResponse(content={"status": "success", "branches": app.state.db.get("branches")})
+
+@app.get("/api/collections")
+async def get_collections(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in request.app.state.db.get("users"):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
 
-    return JSONResponse(content={"status": "success", "branches": app.state.db.get("branches")})
+    collections = request.app.state.db.get("collections")
+    
+    return JSONResponse(content={"status": "success", "collections": collections})
+
+@app.post("/api/create_collection")
+async def create_collection(CCR: CreateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
+    if not token or token not in request.app.state.db.get("users"):
+        return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
+    
+    try:
+        user = request.app.state.db.get(["users", token])
+        if not user['is_admin'] and CCR.branch != user['branch']:
+            return JSONResponse(content={"status": "error", "message": "Unauthorized to create collection in this branch"}, status_code=403)
+
+        collection = Collection.create_collection(request.app.state.db, token, CCR.branch, CCR.timestamp, CCR.source, CCR.quantity, CCR.status)
+        return JSONResponse(content={"status": "success", "collection": collection})
+    except Exception as e:
+        return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
 @app.get("/api/exec/{code}")
 async def execute(code: str, request: Request, token: Optional[str] = Cookie(None)):
