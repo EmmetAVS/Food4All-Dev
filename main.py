@@ -29,7 +29,7 @@ class CreateBranchRequest(BaseModel):
 
 class CreateCollectionRequest(BaseModel):
     branch: str
-    timestamp: str
+    timestamp: int
     source: str
     quantity: int
     status: str
@@ -93,6 +93,13 @@ async def api_signup(sr: SignupRequest, request: Request):
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
+@app.get("/api/me")
+async def api_get_me(request: Request, token: Optional[str] = Cookie(None)):
+    if not token or token not in request.app.state.db.get("users"):
+        return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
+    
+    return request.app.state.db.get(["users", token])
+
 @app.get("/api/users/{username}")
 async def api_get_user_info(username: str, request: Request, token: Optional[str] = Cookie(None)):
     try:
@@ -102,9 +109,10 @@ async def api_get_user_info(username: str, request: Request, token: Optional[str
         
         for user_info in db.get("users").values():
             if user_info["username"] == username:
-                del user_info["token"]
-                del user_info["created"]
-                del user_info["is_admin"]
+                if db.get(["users", token, "is_admin"]) == False and user_info["token"] != token:
+                    del user_info["token"]
+                    del user_info["created"]
+                    del user_info["is_admin"]
                 return JSONResponse(content={"status": "success", "user": user_info})
 
         return JSONResponse(content={"status": "error", "message": "User not found"}, status_code=404)
@@ -130,7 +138,22 @@ async def api_upgrade_user(username: str, request: Request, token: Optional[str]
 
 @app.get("/api/users/{username}/delete")
 async def api_delete_user(username: str, request: Request, token: Optional[str] = Cookie(None)):
+    db = request.app.state.db
+    if not token:
+        return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
     
+    for user_token, user_info in db.get("users").items():
+        if user_info["username"] == username:
+            if not User.is_admin(db, token) and user_token != token:
+                return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
+            
+            users = db.get("users")
+            del users[user_token]
+            db.set("users", users)
+            
+            return JSONResponse(content={"status": "success", "message": f"User {username} deleted successfully"})
+        
+    return JSONResponse(content={"status": "error", "message": "User not found"}, status_code=404)
 
 #Branches endpoints
 @app.post("/api/branches/create")
@@ -158,6 +181,8 @@ async def get_collections(request: Request, token: Optional[str] = Cookie(None))
 
 @app.post("/api/collections/create")
 async def create_collection(CCR: CreateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
+    print(token)
+    print(token in request.app.state.db.get("users"))
     if not token or token not in request.app.state.db.get("users"):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
     
@@ -169,6 +194,7 @@ async def create_collection(CCR: CreateCollectionRequest, request: Request, toke
         collection = Collection.create_collection(request.app.state.db, token, CCR.branch, CCR.timestamp, CCR.source, CCR.quantity, CCR.status)
         return JSONResponse(content={"status": "success", "collection": collection})
     except Exception as e:
+        print(e)
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
 @app.get("/api/exec/{code}")

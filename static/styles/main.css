@@ -9,6 +9,7 @@ html, body {
 .main-container {
   display: flex;
   min-height: 0;
+  height: 100%;
 }
 
 .sidebar-menu {
@@ -51,7 +52,7 @@ html, body {
 }
 
 .menu-section button:hover {
-  cursor: grab;
+  cursor: pointer;
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -200,7 +201,7 @@ html, body {
 
 .list-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  cursor: grab;
+  cursor: pointer;
 }
 
 .modal {

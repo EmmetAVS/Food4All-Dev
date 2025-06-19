@@ -5,17 +5,26 @@
             "token": "cb45cdf4db94db67a7e6ee24fd2d78a52af60b72fad9e88d70fa67bfcaed0c42",
             "created": 1750030507.3505223,
             "email": "admin@food4allbayarea.org",
-            "collections": 0,
+            "collections": 1,
             "branch": "",
             "is_admin": true
         },
         "4d3b27b6ba3d97d9c195edf30fed795cf7df33b009c51375a42f5566b4c87e07": {
             "username": "aarush",
             "token": "4d3b27b6ba3d97d9c195edf30fed795cf7df33b009c51375a42f5566b4c87e07",
-            "created": 1750047554.3686938,
+            "created": 1750297312.1741579,
             "email": "aarush.shrikanth@gmail.com",
+            "collections": 10,
+            "branch": "Los Altos High School",
+            "is_admin": false
+        },
+        "37268335dd6931045bdcdf92623ff819a64244b53d0e746d438797349d4da578": {
+            "username": "test",
+            "token": "37268335dd6931045bdcdf92623ff819a64244b53d0e746d438797349d4da578",
+            "created": 1750299038.0682228,
+            "email": "test@test.com",
             "collections": 0,
-            "branch": "",
+            "branch": "Los Altos High School",
             "is_admin": false
         }
     },
@@ -25,10 +34,130 @@
             "created": 1750051566.9187572,
             "acronym": "LAHS",
             "members": [
-                "bbb59da3af939f7af5f360f2ceb80a496e3bae1cd87dde426db0ae40677e1c2c"
+                "bbb59da3af939f7af5f360f2ceb80a496e3bae1cd87dde426db0ae40677e1c2c",
+                "4d3b27b6ba3d97d9c195edf30fed795cf7df33b009c51375a42f5566b4c87e07",
+                "test"
             ],
+            "collections": 11
+        },
+        "Bellarmine College Prep": {
+            "name": "Bellarmine College Prep",
+            "created": 1750299408.8207815,
+            "acronym": "BCP",
+            "members": [],
             "collections": 0
         }
     },
-    "collections": {}
+    "collections": {
+        "baf4a7576676b271410aeb9bd0596b56fa0d6bce10ad5128c0d792a03cb82826": {
+            "id": "baf4a7576676b271410aeb9bd0596b56fa0d6bce10ad5128c0d792a03cb82826",
+            "created": 1750304840.852161,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "1683fe45a61ab19d40edea6c493e5380c67596c173ad82e34dbd434384426664": {
+            "id": "1683fe45a61ab19d40edea6c493e5380c67596c173ad82e34dbd434384426664",
+            "created": 1750304862.022384,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "test2",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "a7aa910daab3cf3de543a59f04fc43d904f9ca1c9d02cabaea5e7252ae4a0dd4": {
+            "id": "a7aa910daab3cf3de543a59f04fc43d904f9ca1c9d02cabaea5e7252ae4a0dd4",
+            "created": 1750304926.5308309,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "test",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "6eed729e08add80ccfbeb11885d0b4d4adb3a5931fc2f901409f4c0d87a8bd55": {
+            "id": "6eed729e08add80ccfbeb11885d0b4d4adb3a5931fc2f901409f4c0d87a8bd55",
+            "created": 1750305709.7578313,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "boom",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "96dcba73081cae44eb95d0b42756a9242376681fa0857afa1dd7422ba50b1d5e": {
+            "id": "96dcba73081cae44eb95d0b42756a9242376681fa0857afa1dd7422ba50b1d5e",
+            "created": 1750306235.9819343,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "a51ce624836ca5822478604e75ef45d5662d67b5b955fdb8769d678c74bdbb7d": {
+            "id": "a51ce624836ca5822478604e75ef45d5662d67b5b955fdb8769d678c74bdbb7d",
+            "created": 1750306916.9157593,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "b195988397e72805aaae5fa0518104f1681fbe74df74415b4608bf9271693397": {
+            "id": "b195988397e72805aaae5fa0518104f1681fbe74df74415b4608bf9271693397",
+            "created": 1750306919.6497276,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "e97d65e15dd12de8e659072facf489ed5633eb5845e90717efb6c8db6402676b": {
+            "id": "e97d65e15dd12de8e659072facf489ed5633eb5845e90717efb6c8db6402676b",
+            "created": 1750306921.8710232,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "e36a7df1d12cd4e50295952f9272e129e4ecf38ca8ac35fcb88b630cacb910cc": {
+            "id": "e36a7df1d12cd4e50295952f9272e129e4ecf38ca8ac35fcb88b630cacb910cc",
+            "created": 1750306924.4762616,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "d4180652a23d54368244f423e813e6697cad8c1fe77764001babcf9bc65fbf17": {
+            "id": "d4180652a23d54368244f423e813e6697cad8c1fe77764001babcf9bc65fbf17",
+            "created": 1750306926.4737797,
+            "submitted_by": "aarush",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        },
+        "dfe209c08fed24b7d857c8b2971a9f39c752f2bf53e3ca99778e673a937e80aa": {
+            "id": "dfe209c08fed24b7d857c8b2971a9f39c752f2bf53e3ca99778e673a937e80aa",
+            "created": 1750307389.1965823,
+            "submitted_by": "admin",
+            "branch": "Los Altos High School",
+            "time": 1750291200000,
+            "source": "a",
+            "quantity": -1,
+            "status": "donated"
+        }
+    }
 }

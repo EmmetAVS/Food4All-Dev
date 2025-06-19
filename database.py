@@ -96,7 +96,7 @@ class User:
 
             if branch != "":
                 members = db.get(["branches", branch, "members"])
-                members.append(token)
+                members.append(username)
                 db.set(["branches", branch, "members"], members)
             
             return db.get(["users", token])
@@ -162,7 +162,7 @@ class Collection:
     @staticmethod
     def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str):
         
-        if not status or status not in ["Donated", "Collected", "Planned"]:
+        if not status or status not in ["donated", "collected", "planned"]:
             raise Exception("Invalid status")
         
         if not branch or branch not in db.get("branches"):
