@@ -34,6 +34,7 @@ function animateOpenModal(m) {
   quantity.disabled = false;
   status.disabled = false;
   document.getElementById("modalSubmit").disabled = false;
+  document.getElementById("modalSubmit").onclick = () => modalClose("use");
 }
 
 function animateCloseModal(m) {
@@ -47,21 +48,29 @@ function animateCloseModal(m) {
 
 function modalClose(str) {
     const modal = document.getElementById("modal");
+    
+
+    console.log(str);
 
     if (!modal) return;
+    else if (str == "ignore") {
+        animateCloseModal(modal);
+        return;
+    }
+
+    const branch = document.getElementById("collectionSubmitBranch").value;
+    const date = document.getElementById("collectionSubmitDate").value;
+    const source = document.getElementById("collectionSubmitSource").value;
+    let quantity = document.getElementById("collectionSubmitQuantity").value;
+    if (quantity <= 0 || quantity == "") quantity = -1; // -1 means N/A
+    const status = document.getElementById("collectionSubmitStatus").value;
+
+    if (!branch || !date || !source || !status) {
+        animateMessage("Please fill in all fields", "red");
+        return;
+    }
 
     if (str == "use") {
-        const branch = document.getElementById("collectionSubmitBranch").value;
-        const date = document.getElementById("collectionSubmitDate").value;
-        const source = document.getElementById("collectionSubmitSource").value;
-        let quantity = document.getElementById("collectionSubmitQuantity").value;
-        if (quantity <= 0 || quantity == "") quantity = -1; // -1 means N/A
-        const status = document.getElementById("collectionSubmitStatus").value;
-
-        if (!branch || !date || !source || !status) {
-          animateMessage("Please fill in all fields", "red");
-          return;
-        }
 
         fetch("/api/collections/create", 
           {
@@ -86,6 +95,29 @@ function modalClose(str) {
             }
         }
         )
+    } else if (str) {
+        fetch(`/api/collections/${str}/update`, 
+          {
+            method: "POST",
+            headers: {"Content-Type": "application/json"}, 
+            body: JSON.stringify({
+                branch: branch,
+                timestamp: (new Date(date)).getTime(),
+                source: source,
+                quantity: quantity,
+                status: status
+            })
+          }
+        ).then(response => {
+            if (!response.ok) {
+                animateMessage("Failed to update collection: " + response.json().message, "red");
+                return;
+            }
+            else {
+                animateMessage("Collection updated successfully", "green");
+                update();
+            }
+        });
     }
 
     animateCloseModal(modal);
@@ -113,6 +145,7 @@ function modalOpen(collectionID) {
     quantity.disabled = disabled;
     status.disabled = disabled;
     document.getElementById("modalSubmit").disabled = disabled;
+    document.getElementById("modalSubmit").onclick =  () => modalClose(collectionID);
 
     document.getElementById("modalTitle").innerText = `${disabled ? "View" : "Edit"} Collection`;
 }
@@ -161,8 +194,19 @@ async function getCollections() {
         </div>
         */
 
-        for (const collectionID in collections) {
-            const collection = collections[collectionID];
+        let collectionsList = Object.values(collections);
+        collectionsList.sort((a, b) => {
+
+            const dateA = new Date(a.time);
+            const dateB = new Date(b.time);
+            if (dateA - dateB == 0) {
+                return (new Date(b.created)) - (new Date(a.created));
+            }
+            return dateB - dateA;
+
+        });
+        collectionsList.forEach((collection) => {
+            //const collection = collections[collectionID];
             const date = new Date(collection.time);
             const dateString = date.toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
 
@@ -173,7 +217,7 @@ async function getCollections() {
             }
 
             collectionList.innerHTML += `
-            <div class="list-item" onclick="modalOpen('${collectionID}')">
+            <div class="list-item" onclick="modalOpen('${collection.id}')">
               <div>${collection.submitted_by}</div>
               <div>${branches[collection.branch]['acronym']}</div>
               <div>${dateString}</div>
@@ -181,7 +225,7 @@ async function getCollections() {
               <div>${quantity}</div>
               <div>${collection.status}</div>
             </div>`;
-        }
+        });
     });
 }
 
@@ -190,46 +234,41 @@ async function update() {
 }
 
 async function getBranches() {
-  fetch("/api/branches").then(response => {
-        if (!response.ok) {
-            animateMessage("Failed to load branches", "red");
-            return {};
+    const response = await fetch("/api/branches");
+    if (!response.ok) {
+        animateMessage("Failed to load branches", "red");
+        return;
+    }
+
+    const data = await response.json();
+    branches = data.branches;
+    const branchOptions = document.getElementById("branchOptions");
+    const collectionSubmitBranch = document.getElementById("collectionSubmitBranch");
+    let collectionSubmitBranchText = "";
+
+    for (const branch in branches) {
+        const acronym = branches[branch].acronym;
+        branchOptions.innerHTML += `<button onclick="setBranch('${acronym}')">${acronym}</button>`
+
+        if (branches[branch].name != userData.branch) {
+            collectionSubmitBranchText += `<option value="${branches[branch].name}">${acronym}</option>`;
+        } else {
+            collectionSubmitBranchText = `<option value="${branches[branch].name}">${acronym}</option>` + collectionSubmitBranchText;
         }
-        
-        return response.json();
-    }).then(data => {
-        branches = data.branches;
-        const branchOptions = document.getElementById("branchOptions");
-        const collectionSubmitBranch = document.getElementById("collectionSubmitBranch");
-        let collectionSubmitBranchText = "";
+    }
 
-        for (const branch in branches) {
-            const acronym = branches[branch].acronym;
-            branchOptions.innerHTML += `<button onclick="setBranch('${acronym}')">${acronym}</button>`
-
-            if (branches[branch].name != userData.branch) {
-                collectionSubmitBranchText += `<option value="${branches[branch].name}">${acronym}</option>`;
-            } else {
-                collectionSubmitBranchText = `<option value="${branches[branch].name}">${acronym}</option>` + collectionSubmitBranchText;
-            }
-        }
-
-        collectionSubmitBranch.innerHTML = collectionSubmitBranchText;
-    })
+    collectionSubmitBranch.innerHTML = collectionSubmitBranchText;
 }
 
 async function main() {
 
-    fetch ("/api/me").then(response => {
-        if (!response.ok) {
-            animateMessage("Failed to load user data", "red");
-            return {};
-        }
+    response = await fetch ("/api/me")
+    if (!response.ok) {
+        animateMessage("Failed to load user data", "red");
+        return;
+    }
         
-        return response.json();
-    }).then(data => {
-        userData = data;
-    });
+    userData = await response.json()
 
     const endDate = (new Date());
     endDate.setFullYear(9999);

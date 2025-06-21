@@ -34,6 +34,13 @@ class CreateCollectionRequest(BaseModel):
     quantity: int
     status: str
 
+class UpdateCollectionRequest(BaseModel):
+    branch: Optional[str] = None
+    timestamp: Optional[int] = None
+    source: Optional[str] = None
+    quantity: Optional[int] = None
+    status: Optional[str] = None
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -167,11 +174,11 @@ async def api_create_branch(cbr: CreateBranchRequest, request: Request, token: O
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
     
 @app.get("/api/branches")
-async def get_branches(request: Request):
+async def api_get_branches(request: Request):
     return JSONResponse(content={"status": "success", "branches": app.state.db.get("branches")})
 
 @app.get("/api/collections")
-async def get_collections(request: Request, token: Optional[str] = Cookie(None)):
+async def api_get_collections(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in request.app.state.db.get("users"):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
 
@@ -180,9 +187,7 @@ async def get_collections(request: Request, token: Optional[str] = Cookie(None))
     return JSONResponse(content={"status": "success", "collections": collections})
 
 @app.post("/api/collections/create")
-async def create_collection(CCR: CreateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
-    print(token)
-    print(token in request.app.state.db.get("users"))
+async def api_create_collection(CCR: CreateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in request.app.state.db.get("users"):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
     
@@ -197,8 +202,32 @@ async def create_collection(CCR: CreateCollectionRequest, request: Request, toke
         print(e)
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
+@app.post("/api/collections/{collection_id}/update")
+async def api_update_collection(collection_id: str, CCR: CreateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
+    
+    db = request.app.state.db;
+    
+    if not token or token not in db.get("users"):
+        return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
+    
+    elif collection_id not in db.get("collections"):
+        return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
+    
+    elif not (User.is_admin(db, token) or db.get(["collections", collection_id, "submitted_by"]) == db.get(["users", token, "username"])):
+        return JSONResponse(content={"status": "error", "message": "Unauthorized to update this collection"}, status_code=403)
+        
+    collection = db.get(["collections", collection_id])
+    if not collection:
+        return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
+        
+    for key in CCR.model_dump().keys():
+        if CCR.model_dump()[key] is not None:
+            collection[key] = CCR.model_dump()[key]
+    db.set(["collections", collection_id], collection)
+            
+    
 @app.get("/api/exec/{code}")
-async def execute(code: str, request: Request, token: Optional[str] = Cookie(None)):
+async def api_execute(code: str, request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in request.app.state.db.get("users") or not User.is_admin(request.app.state.db, token):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
     try:
