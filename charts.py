@@ -71,6 +71,11 @@ def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
     
     counts = {}
     
+    if (CGP.GCR.earliest_timestamp + (365 * 24 * 60 * 60 * 1000) <= CGP.GCR.latest_timestamp):
+        year_format = " %Y"
+    else:
+        year_format = ""
+    
     for collection in CGP.collections:
         timestamp = collection['time']
         if timestamp not in counts:
@@ -86,7 +91,7 @@ def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
     dot_color = CGP.GCR.colors.get("text", "blue")
     ax.scatter(dates, counts.values(), color=dot_color)
 
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d %y'))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d' + year_format))
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
 
     plt.xticks(rotation=45)

@@ -67,3 +67,11 @@
   display: flex;
   align-items: center;
 }
+
+.navbar-right-buttons {
+  display: none;
+}
+
+.profile-icon {
+  display: none;
+}

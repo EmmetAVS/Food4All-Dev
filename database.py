@@ -180,7 +180,7 @@ class Collection:
             "created": time.time(),
             "submitted_by": username,
             "branch": branch,
-            "timestamp": timestamp,
+            "time": timestamp,
             "source": source,
             "quantity": quantity,
             "status": status

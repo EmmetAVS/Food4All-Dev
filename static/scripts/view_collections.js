@@ -253,9 +253,8 @@ async function getCollections(startDateTimestamp, endDateTimestamp) {
         if (timeStamp > latestTimestamp)
             latestTimestamp = timeStamp;
 
-        //const collection = collections[collectionID];
-        const date = new Date(collection.time);
-        const dateString = date.toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
+        const isoStringSplit = new Date(collection.time).toISOString().split("T")[0].split("-");
+        const dateString = `${isoStringSplit[1]}/${isoStringSplit[2]}/${isoStringSplit[0]}`;
 
         let quantity = collection.quantity;
 
