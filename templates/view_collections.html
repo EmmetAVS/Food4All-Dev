@@ -34,7 +34,7 @@
             <div class="menu-section">
                 <div class="menu-title">Branches</div>
                     <div class="menu-options" id="branchOptions">
-                        <button onclick="setBranch('All')">All</button>
+                        <button onclick="setBranch('ALL')">All</button>
                     </div>
                 </div>
             <div class="menu-section">
@@ -51,16 +51,16 @@
             </div>
         </div>
         <div class="content">
-            <div class="charts">
-                <div class="chart">
+            <div class="charts" id="charts">
+                <div class="chart" id="chart1">
                     <label>Chart 1</label>
                     <img src="static/assets/user_default.png">
                 </div>
-                <div class="chart">
+                <div class="chart" id="chart2">
                     <label>Chart 2</label>
                     <img src="static/assets/user_default.png">
                 </div>
-                <div class="chart">
+                <div class="chart" id="chart3">
                     <label>Chart 3</label>
                     <img src="static/assets/user_default.png">
                 </div>
@@ -106,7 +106,10 @@
                     <option value="collected">Collected</option>
                     <option value="planned">Planned</option>
                 </select>
-                <button id="modalSubmit" onclick="modalClose('use')">Submit</button>
+                <div class="modal-footer-buttons">
+                    <button id="modalSubmit" onclick="modalClose('use')">Submit</button>
+                    <button id="modalDelete" onclick="modalDelete('')" style="display: none">Delete</button>
+                </div>
             </div>
         </div>
     </div>

@@ -152,7 +152,7 @@ class Collection:
         "created": "timestamp",
         "submitted_by": "username1",
         "branch": "branch1",
-        "time": "timestamp",
+        "timestamp": "timestamp",
         "source": "source",
         "quantity": "quantity",
         "status": "status"
@@ -180,7 +180,7 @@ class Collection:
             "created": time.time(),
             "submitted_by": username,
             "branch": branch,
-            "time": timestamp,
+            "timestamp": timestamp,
             "source": source,
             "quantity": quantity,
             "status": status

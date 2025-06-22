@@ -1,6 +1,9 @@
 let branches;
 let userData;
 let collections;
+let visibleCollectionIDs = [];
+let activeBranch = null;
+let earliestTimestamp = Number.MAX_SAFE_INTEGER, latestTimestamp = 0;
 
 function handleDateUpdate() {
   if (document.getElementById("collectionSubmitDate").value >= new Date().toISOString().split("T")[0]) {
@@ -35,6 +38,7 @@ function animateOpenModal(m) {
   status.disabled = false;
   document.getElementById("modalSubmit").disabled = false;
   document.getElementById("modalSubmit").onclick = () => modalClose("use");
+  document.getElementById("modalDelete").style.display = "none";
 }
 
 function animateCloseModal(m) {
@@ -46,11 +50,30 @@ function animateCloseModal(m) {
   m.style.opacity = 0
 }
 
+async function modalDelete(collectionID) {
+    const modal = document.getElementById("modal");
+
+    if (!modal) return;
+
+    response = await fetch(`/api/collections/${collectionID}/delete`, 
+        {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+        }
+    );
+
+    if (!response.ok) {
+        animateMessage("Failed to delete collection: " + response.json().message, "red");
+        return;
+    }
+
+    else animateMessage("Collection deleted successfully", "green");
+    update();
+    animateCloseModal(modal);
+}
+
 function modalClose(str) {
     const modal = document.getElementById("modal");
-    
-
-    console.log(str);
 
     if (!modal) return;
     else if (str == "ignore") {
@@ -60,6 +83,7 @@ function modalClose(str) {
 
     const branch = document.getElementById("collectionSubmitBranch").value;
     const date = document.getElementById("collectionSubmitDate").value;
+    console.log(date);
     const source = document.getElementById("collectionSubmitSource").value;
     let quantity = document.getElementById("collectionSubmitQuantity").value;
     if (quantity <= 0 || quantity == "") quantity = -1; // -1 means N/A
@@ -102,7 +126,7 @@ function modalClose(str) {
             headers: {"Content-Type": "application/json"}, 
             body: JSON.stringify({
                 branch: branch,
-                timestamp: (new Date(date)).getTime(),
+                time: (new Date(date)).getTime(),
                 source: source,
                 quantity: quantity,
                 status: status
@@ -146,6 +170,9 @@ function modalOpen(collectionID) {
     status.disabled = disabled;
     document.getElementById("modalSubmit").disabled = disabled;
     document.getElementById("modalSubmit").onclick =  () => modalClose(collectionID);
+    document.getElementById("modalDelete").style.display = "";
+    document.getElementById("modalDelete").onclick = () => modalDelete(collectionID);
+    document.getElementById("modalDelete").disabled = disabled;
 
     document.getElementById("modalTitle").innerText = `${disabled ? "View" : "Edit"} Collection`;
 }
@@ -167,56 +194,76 @@ function animateMessage(text, color) {
     }, 2000);
 }
 
-function setBranch(branch) {
+async function setBranch(branch) {
+    console.log("Setting branch to: " + branch);
+    if (branch == "ALL") activeBranch = null;
+    else activeBranch = branch;
+    console.log(activeBranch);
+    await update();
 }
 
-async function getCollections() {
-    fetch("/api/collections").then(response => {
-        if (!response.ok) {
-            animateMessage("Failed to load collections", "red");
-            return {};
-        }
+async function getCollections(startDateTimestamp, endDateTimestamp) {
+    const response = await fetch("/api/collections")
+    let data;
+    if (!response.ok) {
+        animateMessage("Failed to load collections", "red");
+        data = {};
+    }
         
-        return response.json();
-    }).then(data => {
-        collections = data.collections;
-        const collectionList = document.getElementById("listItems");
-        collectionList.innerHTML = "";
+    data = await response.json();
+    collections = data.collections;
+    const collectionList = document.getElementById("listItems");
+    collectionList.innerHTML = "";
 
-        /*
-        <div class="list-item">
-          <div>Submitted By</div>
-          <div>Branch Acronym</div>
-          <div>Date</div>
-          <div>Source</div>
-          <div>Quantity</div>
-          <div>Status</div>
-        </div>
-        */
+    /*
+    <div class="list-item">
+        <div>Submitted By</div>
+        <div>Branch Acronym</div>
+        <div>Date</div>
+        <div>Source</div>
+        <div>Quantity</div>
+        <div>Status</div>
+    </div>
+    */
 
-        let collectionsList = Object.values(collections);
-        collectionsList.sort((a, b) => {
+    let collectionsList = Object.values(collections);
+    collectionsList.sort((a, b) => {
 
-            const dateA = new Date(a.time);
-            const dateB = new Date(b.time);
-            if (dateA - dateB == 0) {
-                return (new Date(b.created)) - (new Date(a.created));
-            }
-            return dateB - dateA;
+        const dateA = new Date(a.time);
+        const dateB = new Date(b.time);
+        if (dateA - dateB == 0) {
+            return (new Date(b.created)) - (new Date(a.created));
+        }
+        return dateB - dateA;
 
-        });
-        collectionsList.forEach((collection) => {
-            //const collection = collections[collectionID];
-            const date = new Date(collection.time);
-            const dateString = date.toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
+    });
 
-            let quantity = collection.quantity;
+    visibleCollectionIDs = [];
 
-            if (collection.quantity == -1) {
-                quantity = "N/A";
-            }
+    collectionsList.forEach((collection) => {
 
-            collectionList.innerHTML += `
+        const timeStamp = new Date(collection.time).getTime()
+
+        if (timeStamp > endDateTimestamp || timeStamp < startDateTimestamp) return;
+        else if (activeBranch != null && collection.branch != activeBranch) return;
+
+        if (timeStamp < earliestTimestamp)
+            earliestTimestamp = timeStamp;
+
+        if (timeStamp > latestTimestamp)
+            latestTimestamp = timeStamp;
+
+        //const collection = collections[collectionID];
+        const date = new Date(collection.time);
+        const dateString = date.toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+        let quantity = collection.quantity;
+
+        if (collection.quantity == -1) {
+            quantity = "N/A";
+        }
+
+        collectionList.innerHTML += `
             <div class="list-item" onclick="modalOpen('${collection.id}')">
               <div>${collection.submitted_by}</div>
               <div>${branches[collection.branch]['acronym']}</div>
@@ -225,12 +272,73 @@ async function getCollections() {
               <div>${quantity}</div>
               <div>${collection.status}</div>
             </div>`;
-        });
+
+        visibleCollectionIDs.push(collection.id);
     });
 }
 
+async function getCharts() {
+
+    const chartContainer = document.getElementById("charts");
+
+    const response = await fetch("/api/generate_charts", {
+            method: "POST", 
+            headers: {"Content-Type": "application/json"}, 
+            body: JSON.stringify({
+                collection_ids: visibleCollectionIDs,
+                earliest_timestamp: earliestTimestamp,
+                latest_timestamp: latestTimestamp,
+                colors: {
+                    "background": window.getComputedStyle(document.body).getPropertyValue("--background"),
+                    "accent": window.getComputedStyle(document.body).getPropertyValue("--accent"),
+                    "text": window.getComputedStyle(document.body).getPropertyValue("--text"),
+                }
+            })
+          });
+    if (!response.ok) {
+        console.log(response);
+        animateMessage("Failed to load charts", "red");
+        return;
+    }
+
+    const data = await response.json();
+    const chartData = data.charts;
+
+    let chartHTML = "";
+
+    for (const chart of chartData) {
+
+        const src = `data:image/png;base64,${chart.chart_data}`;
+
+        chartHTML += `
+        
+        <div class="chart" id="chart1">
+            <label>${chart.chart_title}</label>
+            <img src="${src}">
+        </div>
+
+        `
+    }
+
+    chartContainer.innerHTML = chartHTML;
+
+}
+
 async function update() {
-    await getCollections();
+
+    console.log("Updating collections...");
+    const startDateText = document.getElementById("startDate").value;
+    let [year, month, day] = startDateText.split("-").map(Number);
+    const startDate = new Date(year, month - 1, day);
+    
+    const endDateText = document.getElementById("endDate").value;
+    [year, month, day] = endDateText.split("-").map(Number);
+    const endDate = new Date(year, month - 1, day);
+
+    latestTimestamp = 0;
+    earliestTimestamp = Number.MAX_SAFE_INTEGER;
+    await getCollections(startDate.getTime(), endDate.getTime());
+    await getCharts();
 }
 
 async function getBranches() {
@@ -248,7 +356,7 @@ async function getBranches() {
 
     for (const branch in branches) {
         const acronym = branches[branch].acronym;
-        branchOptions.innerHTML += `<button onclick="setBranch('${acronym}')">${acronym}</button>`
+        branchOptions.innerHTML += `<button onclick="setBranch('${branches[branch].name}')">${acronym}</button>`
 
         if (branches[branch].name != userData.branch) {
             collectionSubmitBranchText += `<option value="${branches[branch].name}">${acronym}</option>`;
@@ -274,17 +382,13 @@ async function main() {
     endDate.setFullYear(9999);
     endDate.setMonth(11);
     endDate.setDate(30);
-    document.getElementById("startDate").value = new Date(0).toISOString().split("T")[0];
-    document.getElementById("endDate").value = endDate.toISOString().split("T")[0];
+    const start = new Date(0);
+    document.getElementById("startDate").value = start.getFullYear().toString().padStart(4, '0') + '-' + (start.getMonth() + 1).toString().padStart(2, '0') + '-' + start.getDate().toString().padStart(2, '0');
+    document.getElementById("endDate").value = endDate.getFullYear().toString().padStart(4, '0') + '-' + (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + endDate.getDate().toString().padStart(2, '0');
 
     await getBranches();
     
-    await getCollections();
+    await update();
 }
 
-/*
-
-FINISH MODAL OPEN AND COLLECTION EDITING
-
-*/
 window.onload = main;

@@ -125,7 +125,6 @@ html, body {
     padding-top: 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     overflow: hidden;
     position: relative;
@@ -133,6 +132,13 @@ html, body {
     font-weight: bold;
     gap: 0.2rem;
     font-size: 1.2rem;
+    width: 100%;
+}
+
+.chart label {
+    min-height: 1.5rem;
+    display: block;
+    text-align: center;
 }
 
 .chart img {
@@ -294,10 +300,15 @@ input[type=number] {
     top: 0;
 }
 
-.modal button {
+.modal-footer-buttons button {
   text-align: center;
   width: 30%;
   border: solid 1px var(--border);
   border-radius: 8px;
 }
 
+.modal-footer-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

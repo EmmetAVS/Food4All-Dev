@@ -11,6 +11,9 @@
     <script src="static/scripts/admin.js"></script>
 </head>
 <body>
+    <div class="message-container">
+        <div id="message" class="message">Error</div>
+    </div>
     <div class="navbar" style="z-index: 999;">
         <div class="profile-icon">
             <a class="navbar-item" href="account"><img src="static/assets/user_default.png"></a>
@@ -33,9 +36,9 @@
                     <h2>Admin</h2>
                 </div>
                 <button id="createBranch" onclick='animateOpenModal(document.getElementById("modal"), true);'>Create Branch</button>
-                <label for="admin">Make user admin:</label>
-                <input type="text" id="admin" placeholder="Enter username here">
-                <button id="upgradeUser">Confirm</button>
+                <label for="upgradeUsername">Make user admin:</label>
+                <input type="text" id="upgradeUsername" placeholder="Enter username here">
+                <button id="upgradeUser" onclick="upgradeUser()">Confirm</button>
                 <label for="executeField">Execute Command (Advanced):</label>
                 <input type="text" id="executeField" placeholder="Enter command here">
                 <button id="executeCommand">Execute</button>

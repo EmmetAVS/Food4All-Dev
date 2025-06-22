@@ -12,6 +12,10 @@ from database import User
 from database import Branch
 from database import Collection
 from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse
+from charts import (GenerateChartsRequest, ChartGenerationParameters, ChartGenerationResponse, 
+                    collections_by_source_pie_chart, collections_by_time_plot_chart, 
+                    collections_by_branch_pie_chart)
 
 class LoginRequest(BaseModel):
     username: str
@@ -36,7 +40,7 @@ class CreateCollectionRequest(BaseModel):
 
 class UpdateCollectionRequest(BaseModel):
     branch: Optional[str] = None
-    timestamp: Optional[int] = None
+    time: Optional[int] = None
     source: Optional[str] = None
     quantity: Optional[int] = None
     status: Optional[str] = None
@@ -164,11 +168,11 @@ async def api_delete_user(username: str, request: Request, token: Optional[str] 
 
 #Branches endpoints
 @app.post("/api/branches/create")
-async def api_create_branch(cbr: CreateBranchRequest, request: Request, token: Optional[str] = Cookie(None)):
+async def api_create_branch(CBR: CreateBranchRequest, request: Request, token: Optional[str] = Cookie(None)):
     try:
         if not token or not User.is_admin(request.app.state.db, token):
             return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
-        Branch.create_branch(request.app.state.db, cbr.name, cbr.acronym)
+        Branch.create_branch(request.app.state.db, CBR.name, CBR.acronym)
         return JSONResponse(content={"status": "success", "message": "Branch created successfully"})
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
@@ -203,9 +207,9 @@ async def api_create_collection(CCR: CreateCollectionRequest, request: Request, 
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
 @app.post("/api/collections/{collection_id}/update")
-async def api_update_collection(collection_id: str, CCR: CreateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
+async def api_update_collection(collection_id: str, UCR: UpdateCollectionRequest, request: Request, token: Optional[str] = Cookie(None)):
     
-    db = request.app.state.db;
+    db = request.app.state.db
     
     if not token or token not in db.get("users"):
         return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
@@ -220,11 +224,54 @@ async def api_update_collection(collection_id: str, CCR: CreateCollectionRequest
     if not collection:
         return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
         
-    for key in CCR.model_dump().keys():
-        if CCR.model_dump()[key] is not None:
-            collection[key] = CCR.model_dump()[key]
+    for key in UCR.model_dump().keys():
+        if UCR.model_dump()[key] is not None:
+            print(f"Updating {key} (currently {collection[key]}) to {UCR.model_dump()[key]}")
+            collection[key] = UCR.model_dump()[key]
     db.set(["collections", collection_id], collection)
+    
+    return JSONResponse(content={"status": "success", "collection": collection})
             
+@app.post("/api/collections/{collection_id}/delete")
+async def api_delete_collection(collection_id: str, request: Request, token: Optional[str] = Cookie(None)):
+    
+    db = request.app.state.db
+    
+    if not token or token not in db.get("users"):
+        return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
+    
+    if collection_id not in db.get("collections"):
+        return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
+    
+    elif not (User.is_admin(db, token) or db.get(["collections", collection_id, "submitted_by"]) == db.get(["users", token, "username"])):
+        return JSONResponse(content={"status": "error", "message": "Unauthorized to update this collection"}, status_code=403)
+    
+    collections = db.get("collections")
+    old_collection = collections.get(collection_id)
+    del collections[collection_id]
+    db.set("collections", collections)
+    
+    return JSONResponse(content={"status": "success", "collection": old_collection})
+    
+@app.post("/api/generate_charts")
+async def api_generate_charts(GCR: GenerateChartsRequest, request: Request, token: Optional[str] = Cookie(None)):
+    
+    db = request.app.state.db
+    
+    if not token or token not in db.get("users"):
+        return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
+    
+    collections = []
+    for collection_id in GCR.collection_ids:
+        if collection_id not in db.get("collections"):
+            return JSONResponse(content={"status": "error", "message": f"Collection {collection_id} not found"}, status_code=404)
+        collections.append(db.get(["collections", collection_id]))
+    
+    CGP = ChartGenerationParameters(db, GCR, token, collections)
+    charts = [collections_by_source_pie_chart(CGP), collections_by_time_plot_chart(CGP), collections_by_branch_pie_chart(CGP)]
+    charts = [chart.__dict__ for chart in charts]
+    
+    return JSONResponse(content={"charts": charts})
     
 @app.get("/api/exec/{code}")
 async def api_execute(code: str, request: Request, token: Optional[str] = Cookie(None)):
