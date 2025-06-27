@@ -173,6 +173,9 @@ html, body {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
+.list-header-item {
+}
+
 .list-items {
     display: grid;
     flex: 1;

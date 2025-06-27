@@ -3,3 +3,4 @@ uvicorn
 psycopg
 python-dotenv
 matplotlib
+jinja2
