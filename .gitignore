@@ -3,3 +3,4 @@ run.cmd
 .env
 database_postgresql.py
 .venv/*
+database.json
