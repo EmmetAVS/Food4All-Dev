@@ -208,6 +208,12 @@ html, body {
   border-bottom: none;
 }
 
+.list-item > div {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .list-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
