@@ -6,16 +6,20 @@ let activeBranch = null;
 let earliestTimestamp = Number.MAX_SAFE_INTEGER, latestTimestamp = 0;
 
 function swapMenuSectionVisibility(section) {
+    const element = document.getElementById(section);
 
-    for (const element of document.getElementsByClassName("menu-options")) {
-        element.style.display = "none";
+    for (const otherSections of document.getElementsByClassName("menu-options")) {
+        if (otherSections.id == section && element.style.display.trim() != "") continue;
+        otherSections.style.display = "none";
     }
 
-    const element = document.getElementById(section);
     if (!element) return;
+    console.log(element.style.display, section);
     element.style.display == "none" ?
         element.style.display = "flex" :
         element.style.display = "none";
+
+    console.log(element.style.display, section);
 }
 
 function handleDateUpdate() {
