@@ -5,7 +5,7 @@
             "token": "4d3b27b6ba3d97d9c195edf30fed795cf7df33b009c51375a42f5566b4c87e07",
             "created": 1750623495.1749072,
             "email": "aarush.shrikanth@gmail.com",
-            "collections": 5,
+            "collections": 6,
             "branch": "",
             "is_admin": true
         },
@@ -26,6 +26,24 @@
             "collections": 0,
             "branch": "Los Altos High School",
             "is_admin": false
+        },
+        "c3980e4019f2a4bee63f23d889c4150ac27ec6d857b4df16a15830f6c495a5be": {
+            "username": "Tayshin",
+            "token": "c3980e4019f2a4bee63f23d889c4150ac27ec6d857b4df16a15830f6c495a5be",
+            "created": 1751171240.5737965,
+            "email": "tay.gandhi@gmail.com",
+            "collections": 1,
+            "branch": "Los Altos High School",
+            "is_admin": false
+        },
+        "52c67fa350c7ed4e93a6fef0e1242bed832f8e5fdeac00306b06440238ef8b22": {
+            "username": "brandonyih",
+            "token": "52c67fa350c7ed4e93a6fef0e1242bed832f8e5fdeac00306b06440238ef8b22",
+            "created": 1751177023.7468388,
+            "email": "brandonyih0715@gmail.com",
+            "collections": 0,
+            "branch": "Los Altos High School",
+            "is_admin": false
         }
     },
     "branches": {
@@ -35,9 +53,11 @@
             "acronym": "LAHS",
             "members": [
                 "test",
-                "B1g$teppa"
+                "B1g$teppa",
+                "Tayshin",
+                "brandonyih"
             ],
-            "collections": 6
+            "collections": 8
         },
         "Bellarmine College Prep": {
             "name": "Bellarmine College Prep",
@@ -47,5 +67,26 @@
             "collections": 1
         }
     },
-    "collections": {}
+    "collections": {
+        "84ffffb8baff322b27883ffbcfe7f20c8f40c2bb39855a2c5a9d89a55b95b8a8": {
+            "id": "84ffffb8baff322b27883ffbcfe7f20c8f40c2bb39855a2c5a9d89a55b95b8a8",
+            "created": 1751171351.2292016,
+            "submitted_by": "aarush",
+            "branch": "Bellarmine College Prep",
+            "time": 1751500800000,
+            "source": "Los Altos Farmers Market - Little Sky Baker",
+            "quantity": 31,
+            "status": "planned"
+        },
+        "d46d60b2fcb6e2e02bf33b737b172314dcc04fbd8dc13a5b0547a6c018e48b0b": {
+            "id": "d46d60b2fcb6e2e02bf33b737b172314dcc04fbd8dc13a5b0547a6c018e48b0b",
+            "created": 1751171928.4967546,
+            "submitted_by": "Tayshin",
+            "branch": "Los Altos High School",
+            "time": 1751155200000,
+            "source": "Los Altos Farmers Market",
+            "quantity": 50,
+            "status": "collected"
+        }
+    }
 }
