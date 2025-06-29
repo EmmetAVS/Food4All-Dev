@@ -33,22 +33,22 @@
     <div class="main-container">
         <div class="sidebar-menu">
             <div class="menu-section">
-                <div class="menu-title">Branches</div>
-                    <div class="menu-options" id="branchOptions">
-                        <button onclick="setBranch('ALL')">All</button>
-                    </div>
+                <div class="menu-title" onclick="swapMenuSectionVisibility('branchOptions')">Branches</div>
+                <div class="menu-options" id="branchOptions">
+                    <button onclick="setBranch('ALL')">All</button>
                 </div>
-            <div class="menu-section">
-                <div class="menu-title">Start/End Date</div>
-                    <div class="menu-options">
-                        <label>Start Date:</label>
-                        <input type="date" id="startDate" name="Start Date">
-                        <label>End Date:</label>
-                        <input type="date" id="endDate" name="End Date">
-                    </div>
             </div>
             <div class="menu-section">
-                <button onclick="update()">Update</button>
+                <div class="menu-title" onclick="swapMenuSectionVisibility('dateOptions')">Start/End Date</div>
+                <div class="menu-options" id="dateOptions">
+                    <label>Start Date:</label>
+                    <input type="date" id="startDate" name="Start Date">
+                    <label>End Date:</label>
+                    <input type="date" id="endDate" name="End Date">
+                </div>
+            </div>
+            <div class="menu-section">
+                <button onclick="update(); swapMenuSectionVisibility('')">Update</button>
             </div>
         </div>
         <div class="content">

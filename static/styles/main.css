@@ -62,10 +62,6 @@ html, body {
     -ms-overflow-style: none;
 }
 
-.menu-section:hover .menu-options {
-  display: flex;
-}
-
 .menu-options button, .menu-options a, .menu-options label{
   all: unset;
   margin-left: 1rem;

@@ -5,6 +5,19 @@ let visibleCollectionIDs = [];
 let activeBranch = null;
 let earliestTimestamp = Number.MAX_SAFE_INTEGER, latestTimestamp = 0;
 
+function swapMenuSectionVisibility(section) {
+
+    for (const element of document.getElementsByClassName("menu-options")) {
+        element.style.display = "none";
+    }
+
+    const element = document.getElementById(section);
+    if (!element) return;
+    element.style.display == "none" ?
+        element.style.display = "flex" :
+        element.style.display = "none";
+}
+
 function handleDateUpdate() {
   if (document.getElementById("collectionSubmitDate").value >= new Date().toISOString().split("T")[0]) {
     document.getElementById("collectionSubmitStatus").value = "planned";
