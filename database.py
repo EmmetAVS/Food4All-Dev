@@ -2,6 +2,7 @@ import json
 import time
 from threading import Lock
 import hashlib
+from typing import Optional
 
 class Database:
     def __init__(self, filename: str = 'database.json'):
@@ -160,8 +161,8 @@ class Collection:
     """
 
     @staticmethod
-    def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str):
-        
+    def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str, image: Optional[str] = None):
+ 
         if not status or status not in ["donated", "collected", "planned"]:
             raise Exception("Invalid status")
         
@@ -183,7 +184,8 @@ class Collection:
             "time": timestamp,
             "source": source,
             "quantity": quantity,
-            "status": status
+            "status": status,
+            "image": image
         }
 
         collections = db.get("collections")

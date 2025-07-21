@@ -37,6 +37,7 @@ class CreateCollectionRequest(BaseModel):
     source: str
     quantity: int
     status: str
+    image: Optional[str] = None
 
 class UpdateCollectionRequest(BaseModel):
     branch: Optional[str] = None
@@ -44,6 +45,7 @@ class UpdateCollectionRequest(BaseModel):
     source: Optional[str] = None
     quantity: Optional[int] = None
     status: Optional[str] = None
+    image: Optional[str] = None
 
 class UpdateUserRequest(BaseModel):
     new_username: Optional[str] = None
@@ -242,7 +244,7 @@ async def api_create_collection(CCR: CreateCollectionRequest, request: Request, 
         if not user['is_admin'] and CCR.branch != user['branch']:
             return JSONResponse(content={"status": "error", "message": "Unauthorized to create collection in this branch"}, status_code=403)
 
-        collection = Collection.create_collection(request.app.state.db, token, CCR.branch, CCR.timestamp, CCR.source, CCR.quantity, CCR.status)
+        collection = Collection.create_collection(request.app.state.db, token, CCR.branch, CCR.timestamp, CCR.source, CCR.quantity, CCR.status, image=CCR.image)
         return JSONResponse(content={"status": "success", "collection": collection})
     except Exception as e:
         print(e)
@@ -266,9 +268,10 @@ async def api_update_collection(collection_id: str, UCR: UpdateCollectionRequest
     if not collection:
         return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
         
-    for key in UCR.model_dump().keys():
-        if UCR.model_dump()[key] is not None:
-            collection[key] = UCR.model_dump()[key]
+    dump = UCR.model_dump()
+    for key in dump.keys():
+        if dump[key] is not None:
+            collection[key] = dump[key]
     db.set(["collections", collection_id], collection)
     
     return JSONResponse(content={"status": "success", "collection": collection})

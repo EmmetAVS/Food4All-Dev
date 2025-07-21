@@ -23,39 +23,43 @@ function swapMenuSectionVisibility(section) {
 }
 
 function handleDateUpdate() {
-  if (document.getElementById("collectionSubmitDate").value >= new Date().toISOString().split("T")[0]) {
-    document.getElementById("collectionSubmitStatus").value = "planned";
-    document.getElementById("collectionSubmitStatus").disabled = true;
-  } else {
-    document.getElementById("collectionSubmitStatus").disabled = false;
-  }
+    if (document.getElementById("collectionSubmitDate").value >= new Date().toISOString().split("T")[0]) {
+        document.getElementById("collectionSubmitStatus").value = "planned";
+        document.getElementById("collectionSubmitStatus").disabled = true;
+    } else {
+        document.getElementById("collectionSubmitStatus").disabled = false;
+    }
 }
 
 function animateOpenModal(m) {
-  m.style.display = ""
-  m.style.opacity = "1"
-  m.style.background = "rgba(0, 0, 0, 0.8)"
-  m.style.animation = "fade-in 0.3s"
-  m.children[0].style.animation = "move-up 0.3s"
+    m.style.display = ""
+    m.style.opacity = "1"
+    m.style.background = "rgba(0, 0, 0, 0.8)"
+    m.style.animation = "fade-in 0.3s"
+    m.children[0].style.animation = "move-up 0.3s"
 
-  const date = document.getElementById("collectionSubmitDate");
-  const source = document.getElementById("collectionSubmitSource");
-  const quantity = document.getElementById("collectionSubmitQuantity");
-  const status = document.getElementById("collectionSubmitStatus");
+    const date = document.getElementById("collectionSubmitDate");
+    const source = document.getElementById("collectionSubmitSource");
+    const quantity = document.getElementById("collectionSubmitQuantity");
+    const status = document.getElementById("collectionSubmitStatus");
+    const image = document.getElementById("imageUpload");
 
-  date.value = new Date().toISOString().split("T")[0];
-  source.value = "";
-  quantity.value = "";
-  status.value = "donated";
-  document.getElementById("modalTitle").innerText = "Submit Collection";
+    date.value = new Date().toISOString().split("T")[0];
+    source.value = "";
+    quantity.value = "";
+    status.value = "donated";
+    document.getElementById("modalTitle").innerText = "Submit Collection";
 
-  date.disabled = false;
-  source.disabled = false;
-  quantity.disabled = false;
-  status.disabled = false;
-  document.getElementById("modalSubmit").disabled = false;
-  document.getElementById("modalSubmit").onclick = () => modalClose("use");
-  document.getElementById("modalDelete").style.display = "none";
+    date.disabled = false;
+    source.disabled = false;
+    quantity.disabled = false;
+    status.disabled = false;
+    image.disabled = false;
+    image.value = "";
+    document.getElementById("modalSubmit").disabled = false;
+    document.getElementById("modalSubmit").onclick = () => modalClose("use");
+    document.getElementById("modalDelete").style.display = "none";
+    document.getElementById("imageUploadLabel").innerText = `Upload an image:`;
 }
 
 function animateCloseModal(m) {
@@ -105,63 +109,82 @@ function modalClose(str) {
     let quantity = document.getElementById("collectionSubmitQuantity").value;
     if (quantity <= 0 || quantity == "") quantity = -1; // -1 means N/A
     const status = document.getElementById("collectionSubmitStatus").value;
+    let image = null;
+    const imageFile = document.getElementById("imageUpload").files[0];
 
-    if (!branch || !date || !source || !status) {
-        animateMessage("Please fill in all fields", "red");
-        return;
-    }
-
-    if (str == "use") {
-
-        fetch("/api/collections/create", 
-          {
-            method: "POST", 
-            headers: {"Content-Type": "application/json"}, 
-            body: JSON.stringify({
-                branch: branch,
-                timestamp: (new Date(date)).getTime(),
-                source: source,
-                quantity: quantity,
-                status: status
-            })
-          }
-        ).then(response => {
-            if (!response.ok) {
-                animateMessage("Failed to create collection: " + response.json().message, "red");
-                return;
-            }
-            else {
-                animateMessage("Collection created successfully", "green");
-                update();
-            }
+    const processRequest = () => {
+        if (!branch || !date || !source || !status) {
+            animateMessage("Please fill in all fields", "red");
+            return;
         }
-        )
-    } else if (str) {
-        fetch(`/api/collections/${str}/update`, 
-          {
-            method: "POST",
-            headers: {"Content-Type": "application/json"}, 
-            body: JSON.stringify({
-                branch: branch,
-                time: (new Date(date)).getTime(),
-                source: source,
-                quantity: quantity,
-                status: status
-            })
-          }
-        ).then(response => {
-            if (!response.ok) {
-                animateMessage("Failed to update collection: " + response.json().message, "red");
-                return;
+
+        if (str == "use") {
+
+            fetch("/api/collections/create", 
+            {
+                method: "POST", 
+                headers: {"Content-Type": "application/json"}, 
+                body: JSON.stringify({
+                    branch: branch,
+                    timestamp: (new Date(date)).getTime(),
+                    source: source,
+                    quantity: quantity,
+                    status: status,
+                    image: image ? image : null
+                })
             }
-            else {
-                animateMessage("Collection updated successfully", "green");
-                update();
+            ).then(response => {
+                if (!response.ok) {
+                    animateMessage("Failed to create collection: " + response.json().message, "red");
+                    return;
+                }
+                else {
+                    animateMessage("Collection created successfully", "green");
+                    update();
+                }
             }
-        });
+            )
+        } else if (str) {
+            fetch(`/api/collections/${str}/update`, 
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"}, 
+                body: JSON.stringify({
+                    branch: branch,
+                    time: (new Date(date)).getTime(),
+                    source: source,
+                    quantity: quantity,
+                    status: status,
+                    image: image ? image : null
+                })
+            }
+            ).then(response => {
+                if (!response.ok) {
+                    animateMessage("Failed to update collection: " + response.json().message, "red");
+                    return;
+                }
+                else {
+                    animateMessage("Collection updated successfully", "green");
+                    update();
+                }
+            });
+        }
+        animateCloseModal(modal);
     }
 
-    animateCloseModal(modal);
+    if (imageFile) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            image = e.target.result ? e.target.result : null;
+            console.log(image);
+            processRequest();
+        };
+
+        reader.readAsDataURL(imageFile);
+    } else {
+        processRequest();
+    }
 }
 
 function modalOpen(collectionID) {
@@ -174,6 +197,7 @@ function modalOpen(collectionID) {
     const source = document.getElementById("collectionSubmitSource")
     const quantity = document.getElementById("collectionSubmitQuantity")
     const status = document.getElementById("collectionSubmitStatus")
+    const image = document.getElementById("imageUpload");
 
     branch.value = collections[collectionID].branch;
     date.value = new Date(collections[collectionID].time).toISOString().split("T")[0];
@@ -185,11 +209,13 @@ function modalOpen(collectionID) {
     source.disabled = disabled;
     quantity.disabled = disabled;
     status.disabled = disabled;
+    image.disabled = disabled;
     document.getElementById("modalSubmit").disabled = disabled;
     document.getElementById("modalSubmit").onclick =  () => modalClose(collectionID);
     document.getElementById("modalDelete").style.display = "";
     document.getElementById("modalDelete").onclick = () => modalDelete(collectionID);
     document.getElementById("modalDelete").disabled = disabled;
+    document.getElementById("imageUploadLabel").innerText = `Upload an image ${collections[collectionID].image ? "(Uploaded)" : "(None uploaded)"}:`;
 
     document.getElementById("modalTitle").innerText = `${disabled ? "View" : "Edit"} Collection`;
 }
@@ -385,6 +411,12 @@ async function getBranches() {
 }
 
 async function main() {
+
+    document.getElementById("modal").onclick = (e) => {
+        if (e.target.id == "modal") {
+            modalClose('ignore');
+        }
+    }
 
     response = await fetch ("/api/me")
     if (!response.ok) {

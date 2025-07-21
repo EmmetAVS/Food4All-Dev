@@ -107,6 +107,10 @@
                     <option value="collected">Collected</option>
                     <option value="planned">Planned</option>
                 </select>
+                <form id="imageUploadForm" class="image-upload-form">
+                    <label id="imageUploadLabel" for="file">Upload an image:</label>
+                    <input id="imageUpload" type="file" name="image" accept="image/*" required>
+                </form>
                 <div class="modal-footer-buttons">
                     <button id="modalSubmit" onclick="modalClose('use')">Submit</button>
                     <button id="modalDelete" onclick="modalDelete('')" style="display: none">Delete</button>

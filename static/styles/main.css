@@ -316,14 +316,28 @@ input[type=number] {
 }
 
 .modal-footer-buttons button {
-  text-align: center;
-  width: 30%;
-  border: solid 1px var(--border);
-  border-radius: 8px;
+    text-align: center;
+    width: 30%;
+    border: solid 1px var(--border);
+    border-radius: 8px;
 }
 
 .modal-footer-buttons {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image-upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.image-upload-form input {
+  width: 80%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
 }
