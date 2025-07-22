@@ -189,10 +189,10 @@ def _metrics_image(CGP: ChartGenerationParameters) -> BytesIO:
     
     img = Image.new("RGB", (400, 400), CGP.GCR.colors.get("background", "black"))
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("static/fonts/Roboto-Medium.ttf", 25)
+    font = ImageFont.truetype("static/fonts/Roboto-Medium.ttf", 20)
     for i, (key, value) in enumerate(data.items()):
         text = f"{key}: {value}"
-        draw.text((10, 20 + i * 40), text, fill=text_color, font=font)
+        draw.text((10, 10 + i * 30), text, fill=text_color, font=font)
 
     buf = BytesIO()
     img.save(buf, format="PNG")
