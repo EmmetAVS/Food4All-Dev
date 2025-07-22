@@ -4,6 +4,7 @@ html, body {
     display: flex;
     flex-direction: column;
     background-color: var(--background);
+    font-family: 'Roboto', sans-serif;
 }
 
 .main-container {

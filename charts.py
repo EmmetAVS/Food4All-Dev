@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import matplotlib.dates as mdates
 from zoneinfo import ZoneInfo
+import asyncio
+from PIL import Image, ImageDraw, ImageFont
 
 class GenerateChartsRequest(BaseModel):
     collection_ids: list[str]
@@ -40,7 +42,7 @@ def handle_colors_dict(colors: dict[str, str], fig, ax) -> None:
         ax.yaxis.label.set_color(text_color)
         ax.title.set_color(text_color)
 
-def collections_by_source_pie_chart(CGP: ChartGenerationParameters) -> str:
+async def collections_by_source_pie_chart(CGP: ChartGenerationParameters) -> ChartGenerationResponse:
     
     counts = {}
     
@@ -95,7 +97,7 @@ def _plot_chart_from_data(data: dict[int, str], CGP: ChartGenerationParameters):
     
     return base64.b64encode(buf.getvalue()).decode("utf-8")
 
-def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
+async def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> ChartGenerationResponse:
     
     counts = {}
     
@@ -108,7 +110,7 @@ def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
     
     return ChartGenerationResponse(_plot_chart_from_data(counts, CGP), "Collections by Time")
 
-def quantity_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
+async def quantity_by_time_plot_chart(CGP: ChartGenerationParameters) -> ChartGenerationResponse:
 
     quantities = {}
     
@@ -124,7 +126,7 @@ def quantity_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
 
     return ChartGenerationResponse(_plot_chart_from_data(quantities, CGP), "Quantity by Time")
 
-def collections_by_branch_pie_chart(CGP: ChartGenerationParameters) -> str:
+async def collections_by_branch_pie_chart(CGP: ChartGenerationParameters) -> ChartGenerationResponse:
     
     counts = {}
     
@@ -151,3 +153,54 @@ def collections_by_branch_pie_chart(CGP: ChartGenerationParameters) -> str:
     buf.seek(0)
 
     return ChartGenerationResponse(base64.b64encode(buf.getvalue()).decode("utf-8"), "Branch Collection Distribution")
+
+def _metrics_image(CGP: ChartGenerationParameters) -> BytesIO:
+    
+    data = {
+        "Total Collections": 0,
+        "Total Quantity": 0,
+        "Most Collected Source": "N/A",
+        "Planned Collections": 0,
+        "Collected Collections": 0,
+        "Donated Collections": 0,
+    }
+    
+    sources = {}
+    
+    text_color = CGP.GCR.colors.get("text", "white")
+    
+    for collection in CGP.collections:
+        data["Total Collections"] += 1
+        data["Total Quantity"] += max(0, collection.get("quantity", 0))
+        
+        if collection['status'] == "planned":
+            data["Planned Collections"] += 1
+        elif collection['status'] == "collected":
+            data["Collected Collections"] += 1
+        elif collection['status'] == "donated":
+            data["Donated Collections"] += 1
+        
+        source = collection.get("source", "Unknown").lower().strip()
+        if source not in sources:
+            sources[source] = 0
+        sources[source] += 1
+        if data["Most Collected Source"] == "N/A" or sources[source] > sources[data["Most Collected Source"]]:
+            data["Most Collected Source"] = source
+    
+    img = Image.new("RGB", (400, 400), CGP.GCR.colors.get("background", "black"))
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype("static/fonts/Roboto-Medium.ttf", 25)
+    for i, (key, value) in enumerate(data.items()):
+        text = f"{key}: {value}"
+        draw.text((10, 20 + i * 40), text, fill=text_color, font=font)
+
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return buf
+
+async def metrics_image(CGP: ChartGenerationParameters) -> ChartGenerationResponse:
+
+    buf = await asyncio.to_thread(_metrics_image, CGP)
+
+    return ChartGenerationResponse(base64.b64encode(buf.getvalue()).decode("utf-8"), "Metrics")
