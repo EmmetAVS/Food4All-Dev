@@ -217,7 +217,7 @@ function modalOpen(collectionID) {
     document.getElementById("modalDelete").disabled = disabled;
     document.getElementById("modalTitle").innerText = `${disabled ? "View" : "Edit"} Collection`;
     if (collections[collectionID].image) {
-        document.getElementById("imageUploadLabel").innerHTML = `Upload an image <a href="/images/${collectionID}" target="_blank" rel="noopener noreferrer">(Uploaded)</a>:`;
+        document.getElementById("imageUploadLabel").innerHTML = `Upload an image (<a href="/images/${collectionID}" target="_blank" rel="noopener noreferrer">View</a>):`;
     } else {
         document.getElementById("imageUploadLabel").innerHTML = `Upload an image (None uploaded):`;
     }

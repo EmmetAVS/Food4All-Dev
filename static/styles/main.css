@@ -335,6 +335,17 @@ input[type=number] {
     gap: 0.5rem;
 }
 
+.image-upload-form > label > a{
+    color: inherit;
+    text-decoration: underline;
+}
+
+
+.image-upload-form > label > a:hover {
+    color: var(--text-hover);
+    text-decoration: underline;
+}
+
 .image-upload-form input {
   width: 80%;
   display: flex;

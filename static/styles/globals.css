@@ -1,5 +1,6 @@
 :root {
     --text: white;
+    --text-hover: rgb(68, 147, 248);
     --accent: #2c2c2c;
     --background: #333;
     --border: #3e3737;
