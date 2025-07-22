@@ -147,6 +147,13 @@ class User:
         else:
             raise Exception("User does not exist")
         
+    @staticmethod
+    def token_from_username(db: Database, username: str):
+        for token, user in db.get("users").items():
+            if user["username"] == username:
+                return token
+        raise Exception("User does not exist")
+        
 class Branch:
     """
     "branch1": {

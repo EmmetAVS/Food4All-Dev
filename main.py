@@ -275,6 +275,12 @@ async def api_update_collection(collection_id: str, UCR: UpdateCollectionRequest
     if not collection:
         return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
         
+    if UCR.branch and UCR.branch != collection["branch"]:
+        if UCR.branch not in db.get("branches"):
+            return JSONResponse(content={"status": "error", "message": "Branch not found"}, status_code=404)
+        db.set(["branches", UCR.branch, "collections"], db.get(["branches", UCR.branch, "collections"]) + 1)
+        db.set(["branches", collection["branch"], "collections"], db.get(["branches", collection["branch"], "collections"]) - 1)
+    
     dump = UCR.model_dump()
     for key in dump.keys():
         if key == "image":
@@ -306,7 +312,10 @@ async def api_delete_collection(collection_id: str, request: Request, token: Opt
     old_collection = collections.get(collection_id)
     del collections[collection_id]
     db.set("collections", collections)
-    
+    db.set(["branches", old_collection["branch"], "collections"], db.get(["branches", old_collection["branch"], "collections"]) - 1)
+    submitted_by_token = User.token_from_username(db, old_collection["submitted_by"])
+    db.set(["users", submitted_by_token, "collections"], db.get(["users", submitted_by_token, "collections"]) - 1)
+
     images = db.imageDB.data
     if collection_id in images:
         del images[collection_id]
