@@ -67,29 +67,20 @@ def collections_by_source_pie_chart(CGP: ChartGenerationParameters) -> str:
 
     return ChartGenerationResponse(base64.b64encode(buf.getvalue()).decode("utf-8"), "Status Distribution")
 
-def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
-    
-    counts = {}
+def _plot_chart_from_data(data: dict[int, str], CGP: ChartGenerationParameters):
     
     if (CGP.GCR.earliest_timestamp + (365 * 24 * 60 * 60 * 1000) <= CGP.GCR.latest_timestamp):
         year_format = " %Y"
     else:
         year_format = ""
-    
-    for collection in CGP.collections:
-        timestamp = collection['time']
-        if timestamp not in counts:
-            counts[timestamp] = 1
-        else:
-            counts[timestamp] += 1
-    
-    dates = [datetime.fromtimestamp(ts / 1000.0, tz=ZoneInfo("America/Los_Angeles")) for ts in counts.keys()]
+        
+    dates = [datetime.fromtimestamp(ts / 1000.0, tz=ZoneInfo("America/Los_Angeles")) for ts in data.keys()]
 
     fig, ax = plt.subplots()
     handle_colors_dict(CGP.GCR.colors, fig, ax)
     
     dot_color = CGP.GCR.colors.get("text", "blue")
-    ax.scatter(dates, counts.values(), color=dot_color)
+    ax.scatter(dates, data.values(), color=dot_color)
 
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d' + year_format))
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
@@ -101,8 +92,42 @@ def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
     plt.savefig(buf, format="png", bbox_inches="tight")
     plt.close(fig)
     buf.seek(0)
+    
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
 
-    return ChartGenerationResponse(base64.b64encode(buf.getvalue()).decode("utf-8"), "Collections by Time")
+def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
+    
+    counts = {}
+    
+    for collection in CGP.collections:
+        timestamp = collection['time']
+        if timestamp not in counts:
+            counts[timestamp] = 1
+        else:
+            counts[timestamp] += 1
+    
+    return ChartGenerationResponse(_plot_chart_from_data(counts, CGP), "Collections by Time")
+
+def quantity_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
+
+    quantities = {}
+
+    if (CGP.GCR.earliest_timestamp + (365 * 24 * 60 * 60 * 1000) <= CGP.GCR.latest_timestamp):
+        year_format = " %Y"
+    else:
+        year_format = ""
+    
+    for collection in CGP.collections:
+        timestamp = collection['time']
+        quantity = collection.get('quantity', 0)
+        if quantity < 0:
+            continue
+        if timestamp not in quantities:
+            quantities[timestamp] = quantity
+        else:
+            quantities[timestamp] += quantity
+
+    return ChartGenerationResponse(_plot_chart_from_data(quantities, CGP), "Quantity by Time")
 
 def collections_by_branch_pie_chart(CGP: ChartGenerationParameters) -> str:
     

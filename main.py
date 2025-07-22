@@ -13,9 +13,8 @@ from database import Branch
 from database import Collection
 from fastapi.responses import RedirectResponse
 from fastapi.responses import FileResponse
-from charts import (GenerateChartsRequest, ChartGenerationParameters, ChartGenerationResponse, 
-                    collections_by_source_pie_chart, collections_by_time_plot_chart, 
-                    collections_by_branch_pie_chart)
+from charts import (GenerateChartsRequest, ChartGenerationParameters)
+import charts
 
 class LoginRequest(BaseModel):
     username: str
@@ -331,11 +330,11 @@ async def api_generate_charts(GCR: GenerateChartsRequest, request: Request, toke
         collections.append(db.get(["collections", collection_id]))
     
     CGP = ChartGenerationParameters(db, GCR, token, collections)
-    charts = [collections_by_source_pie_chart(CGP), collections_by_time_plot_chart(CGP), collections_by_branch_pie_chart(CGP)]
-    charts = [chart.__dict__ for chart in charts]
-    
-    return JSONResponse(content={"charts": charts})
-    
+    generated_charts = [charts.collections_by_source_pie_chart(CGP), charts.quantity_by_time_plot_chart(CGP), charts.collections_by_branch_pie_chart(CGP)]
+    generated_charts = [chart.__dict__ for chart in generated_charts]
+
+    return JSONResponse(content={"charts": generated_charts})
+
 @app.get("/api/exec/{code}")
 async def api_execute(code: str, request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in request.app.state.db.get("users") or not User.is_admin(request.app.state.db, token):
