@@ -111,11 +111,6 @@ def collections_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
 def quantity_by_time_plot_chart(CGP: ChartGenerationParameters) -> str:
 
     quantities = {}
-
-    if (CGP.GCR.earliest_timestamp + (365 * 24 * 60 * 60 * 1000) <= CGP.GCR.latest_timestamp):
-        year_format = " %Y"
-    else:
-        year_format = ""
     
     for collection in CGP.collections:
         timestamp = collection['time']
