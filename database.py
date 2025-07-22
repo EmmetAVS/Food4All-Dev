@@ -2,6 +2,7 @@ import json
 import time
 from threading import Lock
 import hashlib
+import asyncio
 from typing import Optional
 
 class Database:
@@ -11,6 +12,7 @@ class Database:
         self.filename = filename
         self.lock = Lock()
         self.data = {}
+        self.imageDB = ImageDB(filename.replace('.json', '_images.json'))
         self.load()
 
     def load(self):
@@ -45,6 +47,34 @@ class Database:
         else:
             expression = f'''data{"".join([f"['{k}']" for k in keys])} = {f"'{value}'" if isinstance(value, str) else value}'''
             exec(expression)
+        self.save()
+
+class ImageDB:
+    def __init__(self, filename: str):
+        self.filename = filename
+        self.lock = Lock()
+        self.data = {}
+        self.load()
+
+    def load(self):
+        with self.lock:
+            try:
+                with open(self.filename, 'r') as file:
+                    self.data = json.load(file)
+            except (FileNotFoundError, json.JSONDecodeError):
+                self.data = {}
+
+    def save(self):
+        with self.lock:
+            with open(self.filename, 'w') as file:
+                json.dump(self.data, file, indent=4)
+
+    def get(self, key: str):
+        return self.data.get(key)
+
+    def set(self, key: str, value: str):
+        print(f"Setting image for {key}")
+        self.data[key] = value
         self.save()
 
 class User:
@@ -175,6 +205,7 @@ class Collection:
         username = db.get(["users", token, "username"])
         if not username:
             raise Exception("User does not exist or is not logged in")
+        
 
         collection = {
             "id": hashlib.sha256((username + branch + str(timestamp) + str(time.time())).encode()).hexdigest(),
@@ -185,8 +216,10 @@ class Collection:
             "source": source,
             "quantity": quantity,
             "status": status,
-            "image": image
+            "image": "exists" if image else None
         }
+        
+        db.imageDB.set(collection["id"], image)
 
         collections = db.get("collections")
         collections[collection["id"]] = collection

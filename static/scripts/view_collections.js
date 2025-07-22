@@ -59,7 +59,7 @@ function animateOpenModal(m) {
     document.getElementById("modalSubmit").disabled = false;
     document.getElementById("modalSubmit").onclick = () => modalClose("use");
     document.getElementById("modalDelete").style.display = "none";
-    document.getElementById("imageUploadLabel").innerText = `Upload an image:`;
+    document.getElementById("imageUploadLabel").innerHTML = `Upload an image:`;
 }
 
 function animateCloseModal(m) {
@@ -215,9 +215,14 @@ function modalOpen(collectionID) {
     document.getElementById("modalDelete").style.display = "";
     document.getElementById("modalDelete").onclick = () => modalDelete(collectionID);
     document.getElementById("modalDelete").disabled = disabled;
-    document.getElementById("imageUploadLabel").innerText = `Upload an image ${collections[collectionID].image ? "(Uploaded)" : "(None uploaded)"}:`;
-
     document.getElementById("modalTitle").innerText = `${disabled ? "View" : "Edit"} Collection`;
+    if (collections[collectionID].image) {
+        document.getElementById("imageUploadLabel").innerHTML = `Upload an image <a href="/images/${collectionID}" target="_blank" rel="noopener noreferrer">(Uploaded)</a>:`;
+    } else {
+        document.getElementById("imageUploadLabel").innerHTML = `Upload an image (None uploaded):`;
+    }
+    
+
 }
 
 function animateMessage(text, color) {

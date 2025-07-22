@@ -89,6 +89,14 @@ async def load_admin_page(request: Request, token: Optional[str] = Cookie(None))
     if not token or token not in app.state.db.get("users") or not User.is_admin(app.state.db, token):
         return RedirectResponse(url="/view")
     return templates.TemplateResponse("admin.html", {"request": request, "is_admin": True})
+
+@app.get("/images/{collection_id}", response_class=HTMLResponse)
+async def api_get_collection_image(collection_id: str, request: Request):
+    print(request.app.state.db.imageDB.data.keys())
+    image = request.app.state.db.imageDB.get(collection_id)
+    if not image:
+        return JSONResponse(content={"status": "error", "message": "Image not found"}, status_code=404)
+    return templates.TemplateResponse("view_image.html", {"request": request, "imageData": image})
 """
 @app.get("/account", response_class=HTMLResponse)
 async def load_account_page(request: Request, token: Optional[str] = Cookie(None)):
@@ -270,9 +278,14 @@ async def api_update_collection(collection_id: str, UCR: UpdateCollectionRequest
         
     dump = UCR.model_dump()
     for key in dump.keys():
-        if dump[key] is not None:
+        if key == "image":
+            collection[key] = "exists"
+        elif dump[key] is not None:
             collection[key] = dump[key]
     db.set(["collections", collection_id], collection)
+    
+    if UCR.image:
+        db.imageDB.set(collection_id, UCR.image)
     
     return JSONResponse(content={"status": "success", "collection": collection})
             
@@ -294,6 +307,12 @@ async def api_delete_collection(collection_id: str, request: Request, token: Opt
     old_collection = collections.get(collection_id)
     del collections[collection_id]
     db.set("collections", collections)
+    
+    images = db.imageDB.data
+    if collection_id in images:
+        del images[collection_id]
+        db.imageDB.data = images
+        db.imageDB.save()
     
     return JSONResponse(content={"status": "success", "collection": old_collection})
     

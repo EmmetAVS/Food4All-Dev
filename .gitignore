@@ -4,3 +4,4 @@ run.cmd
 database_postgresql.py
 .venv/*
 database.json
+database_images.json
