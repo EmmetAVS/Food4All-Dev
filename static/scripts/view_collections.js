@@ -44,8 +44,10 @@ function animateOpenModal(m) {
     const status = document.getElementById("collectionSubmitStatus");
     const image = document.getElementById("imageUpload");
 
-    date.value = new Date().toISOString().split("T")[0];
-    source.value = "";
+    const now = new Date();
+    date.value = now.getFullYear().toString().padStart(4, '0') + '-' + 
+                (now.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                now.getDate().toString().padStart(2, '0');    source.value = "";
     quantity.value = "";
     status.value = "donated";
     document.getElementById("modalTitle").innerText = "Submit Collection";
