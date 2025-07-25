@@ -198,7 +198,7 @@ class Collection:
     """
 
     @staticmethod
-    def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str, image: Optional[str] = None):
+    def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str, image: Optional[bool] = None):
  
         if not status or status not in ["donated", "collected", "planned"]:
             raise Exception("Invalid status")
@@ -223,7 +223,7 @@ class Collection:
             "source": source,
             "quantity": quantity,
             "status": status,
-            "image": "exists" if image else None
+            "image": True if image else False
         }
         
         db.imageDB.set(collection["id"], image)

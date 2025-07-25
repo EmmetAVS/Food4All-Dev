@@ -285,7 +285,7 @@ async def api_update_collection(collection_id: str, UCR: UpdateCollectionRequest
     dump = UCR.model_dump()
     for key in dump.keys():
         if key == "image":
-            collection[key] = "exists"
+            collection[key] = True
         elif dump[key] is not None:
             collection[key] = dump[key]
     db.set(["collections", collection_id], collection)
