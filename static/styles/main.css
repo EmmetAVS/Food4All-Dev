@@ -28,6 +28,9 @@ html, body {
   color: var(--text);
   display: block;
   transition: background-color 0.2s;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .menu-title:hover, .menu-options button:hover, .menu-options a:hover {
