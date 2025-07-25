@@ -111,7 +111,7 @@ function modalClose(str) {
     const status = document.getElementById("collectionSubmitStatus").value;
     let image = null;
     const imageFile = document.getElementById("imageUpload").files[0];
-    if ((imageFile.size / 1024 / 1024).toFixed(2) > 8) {
+    if (imageFile && (imageFile.size / 1024 / 1024).toFixed(2) > 8) {
         animateMessage("Image file is too large (max 8MB)", "red");
         return;
     }
