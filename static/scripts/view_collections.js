@@ -316,6 +316,8 @@ async function getCollections(startDateTimestamp, endDateTimestamp) {
             quantity = "N/A";
         }
 
+        const statusText = collection.status.charAt(0).toUpperCase() + collection.status.slice(1);
+
         collectionList.innerHTML += `
             <div class="list-item" onclick="modalOpen('${collection.id}')">
               <div>${collection.submitted_by}</div>
@@ -323,7 +325,7 @@ async function getCollections(startDateTimestamp, endDateTimestamp) {
               <div>${dateString}</div>
               <div>${collection.source}</div>
               <div>${quantity}</div>
-              <div>${collection.status}</div>
+              <div>${statusText}</div>
             </div>`;
 
         visibleCollectionIDs.push(collection.id);
