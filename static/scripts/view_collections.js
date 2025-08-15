@@ -196,7 +196,7 @@ function modalClose(str) {
 function modalOpen(collectionID) {
     animateOpenModal(document.getElementById("modal"));
 
-    const disabled = !(collections[collectionID].submitted_by == userData.username || userData.is_admin);
+    const disabled = !(collections[collectionID].branch == userData.branch || userData.is_admin);
 
     const branch = document.getElementById("collectionSubmitBranch")
     const date = document.getElementById("collectionSubmitDate")

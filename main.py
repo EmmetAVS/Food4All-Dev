@@ -269,7 +269,7 @@ async def api_update_collection(collection_id: str, UCR: UpdateCollectionRequest
     elif collection_id not in db.get("collections"):
         return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
     
-    elif not (User.is_admin(db, token) or db.get(["collections", collection_id, "submitted_by"]) == db.get(["users", token, "username"])):
+    elif not (User.is_admin(db, token) or db.get(["collections", collection_id, "branch"]) == db.get(["users", token, "branch"])):
         return JSONResponse(content={"status": "error", "message": "Unauthorized to update this collection"}, status_code=403)
         
     collection = db.get(["collections", collection_id])
@@ -306,7 +306,7 @@ async def api_delete_collection(collection_id: str, request: Request, token: Opt
     if collection_id not in db.get("collections"):
         return JSONResponse(content={"status": "error", "message": "Collection not found"}, status_code=404)
     
-    elif not (User.is_admin(db, token) or db.get(["collections", collection_id, "submitted_by"]) == db.get(["users", token, "username"])):
+    elif not (User.is_admin(db, token) or db.get(["collections", collection_id, "branch"]) == db.get(["users", token, "branch"])):
         return JSONResponse(content={"status": "error", "message": "Unauthorized to update this collection"}, status_code=403)
     
     collections = db.get("collections")

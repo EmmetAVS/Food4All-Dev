@@ -187,6 +187,9 @@ def _metrics_image(CGP: ChartGenerationParameters) -> BytesIO:
         if data["Most Collected Source"] == "N/A" or sources[source] > sources[data["Most Collected Source"]]:
             data["Most Collected Source"] = source
     
+    if data["Total Collections"] != 0:
+        data["Most Collected Source"] = " ".join([item.capitalize() for item in data["Most Collected Source"].split()])
+    
     img = Image.new("RGB", (400, 400), CGP.GCR.colors.get("background", "black"))
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype("static/fonts/Roboto-Medium.ttf", 20)
