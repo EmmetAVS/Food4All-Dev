@@ -448,7 +448,11 @@ async function main() {
     document.getElementById("endDate").value = endDate.getFullYear().toString().padStart(4, '0') + '-' + (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + endDate.getDate().toString().padStart(2, '0');
 
     await getBranches();
-    
+
+    console.log(`User branch: '${userData.branch}'`);
+    if (userData.branch in branches) {
+        await setBranch(userData.branch);
+    }
     await update();
 }
 
