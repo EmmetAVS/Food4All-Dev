@@ -284,14 +284,14 @@ async def api_update_collection(collection_id: str, UCR: UpdateCollectionRequest
     
     dump = UCR.model_dump()
     for key in dump.keys():
-        if key == "image":
+        if key == "image" and dump[key]:
+            db.imageDB.set(collection_id, UCR.image)
             collection[key] = True
+        elif key == "image":
+            collection[key] = False
         elif dump[key] is not None:
             collection[key] = dump[key]
     db.set(["collections", collection_id], collection)
-    
-    if UCR.image:
-        db.imageDB.set(collection_id, UCR.image)
     
     return JSONResponse(content={"status": "success", "collection": collection})
             
