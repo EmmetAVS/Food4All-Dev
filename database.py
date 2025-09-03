@@ -198,7 +198,7 @@ class Collection:
     """
 
     @staticmethod
-    def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str, image: Optional[bool] = None):
+    def create_collection(db: Database, token: str, branch: str, timestamp: int, source: str, quantity: int, status: str, image: Optional[str] = None):
  
         if not status or status not in ["donated", "collected", "planned"]:
             raise Exception("Invalid status")
@@ -213,6 +213,8 @@ class Collection:
         if not username:
             raise Exception("User does not exist or is not logged in")
         
+        if image:
+            image = image.strip()
 
         collection = {
             "id": hashlib.sha256((username + branch + str(timestamp) + str(time.time())).encode()).hexdigest(),
@@ -226,7 +228,8 @@ class Collection:
             "image": True if image else False
         }
         
-        db.imageDB.set(collection["id"], image)
+        if image:
+            db.imageDB.set(collection["id"], image)
 
         collections = db.get("collections")
         collections[collection["id"]] = collection
