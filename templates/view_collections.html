@@ -75,6 +75,8 @@
                     <div class="list-header-item">Source</div>
                     <div class="list-header-item">Quantity (lbs)</div>
                     <div class="list-header-item">Status</div>
+                    <div class="list-header-item">Receipts</div>
+                    <div class="list-header-item">Donated To</div>
                 </div>
                 <div class="list-items" id="listItems">
                     <div class="list-item">
@@ -108,6 +110,10 @@
                     <option value="collected">Collected</option>
                     <option value="planned">Planned</option>
                 </select>
+                <label for="collectionReceiptQuantity">Receipts (optional):</label>
+                <input id="collectionReceiptQuantity" type="number"></input>
+                <label for="collectionDonationLocation">Donated To:</label>
+                <input id="collectionDonationLocation" type="text"></input>
                 <form id="imageUploadForm" class="image-upload-form">
                     <label id="imageUploadLabel" for="file">Upload an image:</label>
                     <input id="imageUpload" type="file" name="image" accept="image/*" required>

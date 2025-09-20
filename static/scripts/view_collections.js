@@ -43,13 +43,15 @@ function animateOpenModal(m) {
     const quantity = document.getElementById("collectionSubmitQuantity");
     const status = document.getElementById("collectionSubmitStatus");
     const image = document.getElementById("imageUpload");
+    const receipt = document.getElementById("collectionReceiptQuantity");
+    const donatedTo = document.getElementById("collectionDonationLocation");
 
     const now = new Date();
     date.value = now.getFullYear().toString().padStart(4, '0') + '-' + 
                 (now.getMonth() + 1).toString().padStart(2, '0') + '-' + 
                 now.getDate().toString().padStart(2, '0');    source.value = "";
     quantity.value = "";
-    status.value = "donated";
+    status.value = "planned";
     document.getElementById("modalTitle").innerText = "Submit Collection";
 
     date.disabled = false;
@@ -57,7 +59,11 @@ function animateOpenModal(m) {
     quantity.disabled = false;
     status.disabled = false;
     image.disabled = false;
+    receipt.disabled = false;
+    donatedTo.disabled = false;
     image.value = "";
+    receipt.value = "";
+    donatedTo.value = "";
     document.getElementById("modalSubmit").disabled = false;
     document.getElementById("modalSubmit").onclick = () => modalClose("use");
     document.getElementById("modalDelete").style.display = "none";
@@ -111,6 +117,11 @@ function modalClose(str) {
     let quantity = document.getElementById("collectionSubmitQuantity").value;
     if (quantity <= 0 || quantity == "") quantity = -1; // -1 means N/A
     const status = document.getElementById("collectionSubmitStatus").value;
+
+    let receipt = document.getElementById("collectionReceiptQuantity").value;
+    if (receipt < 0 || receipt == "") receipt = 0;
+    const donatedTo = document.getElementById("collectionDonationLocation").value;
+
     let image = null;
     const imageFile = document.getElementById("imageUpload").files[0];
     if (imageFile && (imageFile.size / 1024 / 1024).toFixed(2) > 8) {
@@ -136,6 +147,8 @@ function modalClose(str) {
                     source: source,
                     quantity: quantity,
                     status: status,
+                    receipt: receipt,
+                    donated_to: donatedTo,
                     image: image ? image : null
                 })
             }
@@ -161,6 +174,8 @@ function modalClose(str) {
                     source: source,
                     quantity: quantity,
                     status: status,
+                    receipt: receipt,
+                    donated_to: donatedTo,
                     image: image ? image : null
                 })
             }
@@ -204,18 +219,24 @@ function modalOpen(collectionID) {
     const quantity = document.getElementById("collectionSubmitQuantity")
     const status = document.getElementById("collectionSubmitStatus")
     const image = document.getElementById("imageUpload");
+    const receipt = document.getElementById("collectionReceiptQuantity");
+    const donatedTo = document.getElementById("collectionDonationLocation");
 
     branch.value = collections[collectionID].branch;
     date.value = new Date(collections[collectionID].time).toISOString().split("T")[0];
     source.value = collections[collectionID].source;
     quantity.value = collections[collectionID].quantity == -1 ? "" : collections[collectionID].quantity;
     status.value = collections[collectionID].status;
+    receipt.value = collections[collectionID].receipts ? collections[collectionID].receipts : "";
+    donatedTo.value = collections[collectionID].donated_to ? collections[collectionID].donated_to : "";
 
     date.disabled = disabled;
     source.disabled = disabled;
     quantity.disabled = disabled;
     status.disabled = disabled;
     image.disabled = disabled;
+    receipt.disabled = disabled;
+    donatedTo.disabled = disabled;
     document.getElementById("modalSubmit").disabled = disabled;
     document.getElementById("modalSubmit").onclick =  () => modalClose(collectionID);
     document.getElementById("modalDelete").style.display = "";
@@ -277,6 +298,8 @@ async function getCollections(startDateTimestamp, endDateTimestamp) {
         <div>Source</div>
         <div>Quantity</div>
         <div>Status</div>
+        <div>Receipt</div>
+        <div>Donated To</div>
     </div>
     */
 
@@ -326,6 +349,8 @@ async function getCollections(startDateTimestamp, endDateTimestamp) {
               <div>${collection.source}</div>
               <div>${quantity}</div>
               <div>${statusText}</div>
+              <div>${collection.receipt ? collection.receipt : ""}</div>
+              <div>${collection.donated_to ? collection.donated_to : ""}</div>
             </div>`;
 
         visibleCollectionIDs.push(collection.id);

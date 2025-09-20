@@ -40,6 +40,7 @@ html, body {
 .menu-options {
   display: none;
   flex-direction: column;
+  margin-left: 1rem;
 }
 
 .menu-section button {
@@ -68,11 +69,10 @@ html, body {
 
 .menu-options button, .menu-options a, .menu-options label{
   all: unset;
-  margin-left: 1rem;
   background-color: var(--accent);
   border: none;
   text-align: left;
-  font-size: 1rem;
+  font-size: inherit;
   display: block;
   cursor: pointer;
   padding: 1rem;
@@ -169,12 +169,15 @@ html, body {
   margin-left: 1rem;
   border: solid 1px var(--text);
   font-size: 1.2rem;
-  font-weight: bold;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  gap: 0.1rem;
 }
 
 .list-header-item {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .list-items {
@@ -204,7 +207,7 @@ html, body {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(var(--columns), 1fr);
   border: solid 1px var(--text);
   border-bottom: none;
 }

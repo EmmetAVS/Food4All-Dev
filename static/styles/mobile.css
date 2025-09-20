@@ -41,7 +41,8 @@
   }
   
   .sidebar-menu {
-    width: 20vw;
+    font-size: 0.7rem;
+    width: 15vw;
   }
 
   .content {

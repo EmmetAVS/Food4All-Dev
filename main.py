@@ -37,6 +37,8 @@ class CreateCollectionRequest(BaseModel):
     source: str
     quantity: int
     status: str
+    receipt: int
+    donated_to: str
     image: Optional[str] = None
 
 class UpdateCollectionRequest(BaseModel):
@@ -46,6 +48,8 @@ class UpdateCollectionRequest(BaseModel):
     quantity: Optional[int] = None
     status: Optional[str] = None
     image: Optional[str] = None
+    receipt: Optional[str] = None
+    donated_to: Optional[str] = None
 
 class UpdateUserRequest(BaseModel):
     new_username: Optional[str] = None
@@ -252,7 +256,7 @@ async def api_create_collection(CCR: CreateCollectionRequest, request: Request, 
         if not user['is_admin'] and CCR.branch != user['branch']:
             return JSONResponse(content={"status": "error", "message": "Unauthorized to create collection in this branch"}, status_code=403)
 
-        collection = Collection.create_collection(request.app.state.db, token, CCR.branch, CCR.timestamp, CCR.source, CCR.quantity, CCR.status, image=CCR.image)
+        collection = Collection.create_collection(request.app.state.db, token, CCR.branch, CCR.timestamp, CCR.source, CCR.quantity, CCR.status, receipt=CCR.receipt, donated_to=CCR.donated_to, image=CCR.image)
         return JSONResponse(content={"status": "success", "collection": collection})
     except Exception as e:
         print(e)
