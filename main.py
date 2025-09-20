@@ -239,9 +239,6 @@ async def api_get_branches(request: Request):
 
 @app.get("/api/collections")
 async def api_get_collections(request: Request, token: Optional[str] = Cookie(None)):
-    if not token or token not in request.app.state.db.get("users"):
-        return JSONResponse(content={"status": "error", "message": "Unauthorized"}, status_code=403)
-
     collections = request.app.state.db.get("collections")
     
     return JSONResponse(content={"status": "success", "collections": collections})
