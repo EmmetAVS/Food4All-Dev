@@ -14,6 +14,7 @@ from database import Branch
 from database import Collection
 from fastapi.responses import RedirectResponse
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from charts import (GenerateChartsRequest, ChartGenerationParameters)
 import charts
 
@@ -59,6 +60,14 @@ class UpdateUserRequest(BaseModel):
     new_branch: Optional[str] = None
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://food4allbayarea.org"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
