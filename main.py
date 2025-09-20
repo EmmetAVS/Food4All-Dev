@@ -63,7 +63,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://food4allbayarea.org"],
+    allow_origins=["https://www.food4allbayarea.org"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
