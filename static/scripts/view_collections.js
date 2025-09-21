@@ -227,7 +227,7 @@ function modalOpen(collectionID) {
     source.value = collections[collectionID].source;
     quantity.value = collections[collectionID].quantity == -1 ? "" : collections[collectionID].quantity;
     status.value = collections[collectionID].status;
-    receipt.value = collections[collectionID].receipts ? collections[collectionID].receipts : "";
+    receipt.value = collections[collectionID].receipt ? collections[collectionID].receipt : "";
     donatedTo.value = collections[collectionID].donated_to ? collections[collectionID].donated_to : "";
 
     date.disabled = disabled;

@@ -17,8 +17,9 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from charts import (GenerateChartsRequest, ChartGenerationParameters)
 import charts
+import subprocess
 
-version = "4"
+version = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("utf-8").strip()
 
 class LoginRequest(BaseModel):
     username: str
