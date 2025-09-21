@@ -18,6 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from charts import (GenerateChartsRequest, ChartGenerationParameters)
 import charts
 
+version = "4"
+
 class LoginRequest(BaseModel):
     username: str
     password: str
@@ -81,27 +83,27 @@ async def startup_event():
 async def load_home_page(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in app.state.db.get("users"):
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("view_collections.html", {"request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
+    return templates.TemplateResponse("view_collections.html", {"version": version, "request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
 
 @app.get("/view", response_class=HTMLResponse)
 async def load_view_page(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in app.state.db.get("users"):
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("view_collections.html", {"request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
+    return templates.TemplateResponse("view_collections.html", {"version": version, "request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
 
 @app.get("/login", response_class=HTMLResponse)
 async def load_login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse("login.html", {"version": version, "request": request})
 
 @app.get("/signup", response_class=HTMLResponse)
 async def load_signup_page(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
+    return templates.TemplateResponse("signup.html", {"version": version, "request": request})
 
 @app.get("/admin", response_class=HTMLResponse)
 async def load_admin_page(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in app.state.db.get("users") or not User.is_admin(app.state.db, token):
         return RedirectResponse(url="/view")
-    return templates.TemplateResponse("admin.html", {"request": request, "is_admin": True})
+    return templates.TemplateResponse("admin.html", {"version": version, "request": request, "is_admin": True})
 
 @app.get("/images/{collection_id}", response_class=HTMLResponse)
 async def api_get_collection_image(collection_id: str, request: Request):
@@ -109,13 +111,13 @@ async def api_get_collection_image(collection_id: str, request: Request):
     image = request.app.state.db.imageDB.get(collection_id)
     if not image:
         return JSONResponse(content={"status": "error", "message": "Image not found"}, status_code=404)
-    return templates.TemplateResponse("view_image.html", {"request": request, "imageData": image})
+    return templates.TemplateResponse("view_image.html", {"version": version, "request": request, "imageData": image})
 """
 @app.get("/account", response_class=HTMLResponse)
 async def load_account_page(request: Request, token: Optional[str] = Cookie(None)):
     if not token or token not in app.state.db.get("users"):
         return RedirectResponse(url="/login")
-    return templates.TemplateResponse("account.html", {"request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
+    return templates.TemplateResponse("account.html", {"version": version, "request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
 """
 @app.get("/favicon.ico")
 async def favicon():
