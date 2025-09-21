@@ -49,7 +49,7 @@ class UpdateCollectionRequest(BaseModel):
     quantity: Optional[int] = None
     status: Optional[str] = None
     image: Optional[str] = None
-    receipt: Optional[str] = None
+    receipt: Optional[int] = None
     donated_to: Optional[str] = None
 
 class UpdateUserRequest(BaseModel):
