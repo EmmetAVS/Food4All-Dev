@@ -134,10 +134,11 @@ async def collections_by_branch_pie_chart(CGP: ChartGenerationParameters) -> Cha
     
     for collection in CGP.collections:
         branch = CGP.db.get(["branches", collection['branch'], "acronym"])
+        quantity = collection.get('quantity', 0)
         if branch not in counts:
-            counts[branch] = 1
+            counts[branch] = quantity
         else:
-            counts[branch] += 1
+            counts[branch] += quantity
             
     fig, ax = plt.subplots()
     handle_colors_dict(CGP.GCR.colors, fig, ax)
