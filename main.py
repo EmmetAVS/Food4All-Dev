@@ -88,9 +88,7 @@ async def load_home_page(request: Request, token: Optional[str] = Cookie(None)):
 
 @app.get("/view", response_class=HTMLResponse)
 async def load_view_page(request: Request, token: Optional[str] = Cookie(None)):
-    if not token or token not in app.state.db.get("users"):
-        return RedirectResponse(url="/login")
-    return templates.TemplateResponse("view_collections.html", {"version": version, "request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
+    return RedirectResponse(url="/")
 
 @app.get("/login", response_class=HTMLResponse)
 async def load_login_page(request: Request):
