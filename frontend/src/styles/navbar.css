@@ -1,77 +1,127 @@
+/* ── Navbar ──────────────────────────────────── */
 .navbar {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
   align-items: center;
-  background-color: var(--accent);
-  padding: 0.75rem 1.5rem;
-  color: var(--text);
+  justify-content: space-between;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  height: 60px;
   flex-shrink: 0;
   position: relative;
-  height: 6vh;
+  z-index: 100;
 }
 
-.navbar-item {
-  all: unset;
+.navbar-brand {
   display: flex;
-  background-color: var(--accent);
-  border: none;
-  text-align: center;
-  padding: 0;
-  color: var(--text);
-  text-decoration: none;
-  margin: 0 0.75rem;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-  height: 100%;
-  justify-content: center;
   align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--text);
 }
 
-.navbar-item:hover {
-    color: #ffcc00;
-    cursor: grab;
-}
-
-.profile-icon {
-  height: 100%;
-}
-
-.navbar-right-buttons {
-  height: 100%;
-}
-
-.profile-icon img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
-
-.navbar-pages {
+.navbar-brand-icon {
+  width: 30px;
+  height: 30px;
+  background: var(--accent-dim);
+  border-radius: var(--radius-sm);
   display: flex;
+  align-items: center;
   justify-content: center;
-  flex-grow: 1;
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.navbar-brand-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.navbar-brand-name span {
+  color: var(--accent);
+}
+
+/* Centre nav items */
+.navbar-pages {
   position: absolute;
   left: 50%;
   top: 0;
   bottom: 0;
   transform: translateX(-50%);
-  width: 10vw;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.navbar-pages .navbar-item {
-  margin: 0 1rem;
+.navbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
 }
 
+.navbar-item:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+
+/* Primary CTA button in nav */
+.navbar-item.primary {
+  background: var(--accent);
+  color: #0d0f14;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+}
+
+.navbar-item.primary:hover {
+  background: var(--accent-hover);
+  color: #0d0f14;
+}
+
+/* Right side actions */
 .navbar-right-buttons {
   display: flex;
   align-items: center;
+  gap: 0.25rem;
 }
 
-.navbar-right-buttons {
-  display: none;
+.navbar-icon-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+  cursor: pointer;
+  background: transparent;
+  border: none;
 }
 
-.profile-icon {
-  display: none;
+.navbar-icon-btn:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+
+.profile-icon img,
+.profile-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--border-focus);
 }

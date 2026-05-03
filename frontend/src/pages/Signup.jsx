@@ -10,6 +10,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [branch, setBranch] = useState('')
   const [branches, setBranches] = useState({})
+  const [loading, setLoading] = useState(false)
   const msgRef = useRef()
   const navigate = useNavigate()
 
@@ -25,69 +26,119 @@ export default function Signup() {
       return
     }
     if (password !== confirmPassword) {
-      msgRef.current.show('Passwords are not the same', 'red')
+      msgRef.current.show('Passwords do not match', 'red')
       return
     }
+    setLoading(true)
     try {
       const data = await api.signup(username, password, email, branch)
       setTokenCookie(data.user.token)
-      msgRef.current.show('Signup successful', 'green')
+      msgRef.current.show('Account created!', 'green')
       setTimeout(() => navigate('/'), 500)
     } catch (e) {
       msgRef.current.show(e.message || 'Signup failed', 'red')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <>
       <Message ref={msgRef} />
-      <div
-        className="modal-background centered-children"
-        style={{ display: 'flex', width: '100%', height: '100%' }}
-      >
-        <div className="modal vertical-container" style={{ borderRadius: '8px' }}>
-          <div className="modal-header">
-            <h2>Signup</h2>
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="auth-logo">
+            <div className="auth-logo-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M9 2C6.8 2 5 3.8 5 6c0 1.6.9 3 2.2 3.7V15h3.6V9.7C12.1 9 13 7.6 13 6c0-2.2-1.8-4-4-4z" fill="currentColor"/>
+                <rect x="7" y="15" width="4" height="1.5" rx="0.75" fill="currentColor" opacity="0.6"/>
+              </svg>
+            </div>
+            <span className="auth-logo-name">Food<span>4</span>All</span>
           </div>
-          <label htmlFor="username">Username:</label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-          />
-          <label htmlFor="email">Email:</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-          <label htmlFor="password">Password:</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <label htmlFor="confirmPassword">Confirm password:</label>
-          <input
-            id="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-          />
-          <label htmlFor="branch">Branch (optional):</label>
-          <select id="branch" value={branch} onChange={e => setBranch(e.target.value)}>
-            <option value="">N/A</option>
-            {Object.keys(branches).map(key => (
-              <option key={key} value={key}>{key}</option>
-            ))}
-          </select>
-          <div className="modal-footer">
-            <button onClick={signup}>Signup</button>
-            <Link to="/login">Already have an account? Login</Link>
+
+          <h1 className="auth-title">Create account</h1>
+          <p className="auth-subtitle">Join Food4All to start tracking collections</p>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="username">Username</label>
+            <input
+              id="username"
+              className="form-input"
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="Choose a username"
+              autoComplete="username"
+              autoFocus
+            />
           </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="email">Email</label>
+            <input
+              id="email"
+              className="form-input"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="password">Password</label>
+            <input
+              id="password"
+              className="form-input"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Create a password"
+              autoComplete="new-password"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="confirmPassword">Confirm password</label>
+            <input
+              id="confirmPassword"
+              className="form-input"
+              type="password"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              placeholder="Repeat your password"
+              autoComplete="new-password"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="branch">Branch <span style={{color:'var(--text-3)',fontWeight:400}}>(optional)</span></label>
+            <select
+              id="branch"
+              className="form-select"
+              value={branch}
+              onChange={e => setBranch(e.target.value)}
+            >
+              <option value="">No branch</option>
+              {Object.keys(branches).map(key => (
+                <option key={key} value={key}>{key}</option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            className="auth-submit"
+            onClick={signup}
+            disabled={loading}
+          >
+            {loading ? 'Creating account…' : 'Create account'}
+          </button>
+
+          <p className="auth-link">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
         </div>
       </div>
     </>
