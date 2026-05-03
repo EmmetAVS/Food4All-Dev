@@ -1,7 +1,23 @@
-__pycache__/*
-run.cmd
+# Python
+__pycache__/
+*.py[cod]
+.venv/
 .env
-database_postgresql.py
-.venv/*
+
+# Data / secrets
 database.json
 database_images.json
+database_postgresql.py
+run.cmd
+
+# React / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# Editor / OS
+.claude/
+.DS_Store
+Thumbs.db

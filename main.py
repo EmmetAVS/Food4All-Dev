@@ -73,36 +73,13 @@ app.add_middleware(
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="react-assets")
 
 templates = Jinja2Templates(directory="templates")
 
 @app.on_event("startup")
 async def startup_event():
     app.state.db = Database("database.json")
-
-@app.get("/", response_class=HTMLResponse)
-async def load_home_page(request: Request, token: Optional[str] = Cookie(None)):
-    if not token or token not in app.state.db.get("users"):
-        return RedirectResponse(url="/login")
-    return templates.TemplateResponse("view_collections.html", {"version": version, "request": request, "is_admin": app.state.db.get(["users", token])['is_admin']})
-
-@app.get("/view", response_class=HTMLResponse)
-async def load_view_page(request: Request, token: Optional[str] = Cookie(None)):
-    return RedirectResponse(url="/")
-
-@app.get("/login", response_class=HTMLResponse)
-async def load_login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"version": version, "request": request})
-
-@app.get("/signup", response_class=HTMLResponse)
-async def load_signup_page(request: Request):
-    return templates.TemplateResponse("signup.html", {"version": version, "request": request})
-
-@app.get("/admin", response_class=HTMLResponse)
-async def load_admin_page(request: Request, token: Optional[str] = Cookie(None)):
-    if not token or token not in app.state.db.get("users") or not User.is_admin(app.state.db, token):
-        return RedirectResponse(url="/view")
-    return templates.TemplateResponse("admin.html", {"version": version, "request": request, "is_admin": True})
 
 @app.get("/images/{collection_id}", response_class=HTMLResponse)
 async def api_get_collection_image(collection_id: str, request: Request):
@@ -376,3 +353,7 @@ async def api_execute(code: str, request: Request, token: Optional[str] = Cookie
         return JSONResponse(content={"status": "success", "response": space.get("a", "No output")})
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
+
+@app.get("/{full_path:path}", response_class=HTMLResponse)
+async def serve_react(full_path: str):  # noqa: ARG001
+    return FileResponse("frontend/dist/index.html", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
