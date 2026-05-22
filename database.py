@@ -105,7 +105,7 @@ class User:
         if not username or not password or not email:
             raise Exception("Username, password, and email are required")
 
-        if branch not in db.get("branches") and branch != "":
+        if branch not in db.get("branches") or branch == "":
             raise Exception("Branch does not exist")
         
         for user in db.get("users").values():
