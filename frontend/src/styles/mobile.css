@@ -7,6 +7,32 @@
 
 /* ── Phablet (≤ 768px) ───────────────────────── */
 @media (max-width: 768px) {
+  /* Break the fixed-height viewport lock so the page can scroll */
+  html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+  }
+
+  #root {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .main-container {
+    overflow: visible;
+  }
+
+  .content {
+    overflow: visible;
+    height: auto;
+  }
+
+  .list {
+    flex: none;
+    height: auto;
+  }
+
   /* Hide sidebar, show mobile filter bar */
   .sidebar-menu {
     display: none;
