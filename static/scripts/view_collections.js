@@ -114,12 +114,12 @@ function modalClose(str) {
     const date = document.getElementById("collectionSubmitDate").value;
     console.log(date);
     const source = document.getElementById("collectionSubmitSource").value;
-    let quantity = document.getElementById("collectionSubmitQuantity").value;
-    if (quantity <= 0 || quantity == "") quantity = -1; // -1 means N/A
+    let quantity = parseFloat(document.getElementById("collectionSubmitQuantity").value);
+    if (isNaN(quantity) || quantity <= 0) quantity = -1; // -1 means N/A
     const status = document.getElementById("collectionSubmitStatus").value;
 
-    let receipt = document.getElementById("collectionReceiptQuantity").value;
-    if (receipt < 0 || receipt == "") receipt = 0;
+    let receipt = parseFloat(document.getElementById("collectionReceiptQuantity").value);
+    if (isNaN(receipt) || receipt < 0) receipt = 0;
     const donatedTo = document.getElementById("collectionDonationLocation").value;
 
     let image = null;

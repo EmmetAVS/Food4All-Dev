@@ -39,9 +39,9 @@ class CreateCollectionRequest(BaseModel):
     branch: str
     timestamp: int
     source: str
-    quantity: int
+    quantity: float
     status: str
-    receipt: int
+    receipt: float
     donated_to: str
     image: Optional[str] = None
 
@@ -49,10 +49,10 @@ class UpdateCollectionRequest(BaseModel):
     branch: Optional[str] = None
     time: Optional[int] = None
     source: Optional[str] = None
-    quantity: Optional[int] = None
+    quantity: Optional[float] = None
     status: Optional[str] = None
     image: Optional[str] = None
-    receipt: Optional[int] = None
+    receipt: Optional[float] = None
     donated_to: Optional[str] = None
 
 class UpdateUserRequest(BaseModel):

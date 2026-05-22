@@ -199,8 +199,8 @@ class Collection:
 
     @staticmethod
     def create_collection(
-        db: Database, 
-        token: str, branch: str, timestamp: int, source: str, quantity: int, status: str, receipt: int, donated_to: str,
+        db: Database,
+        token: str, branch: str, timestamp: int, source: str, quantity: float, status: str, receipt: float, donated_to: str,
         image: Optional[str] = None
     ):
  
