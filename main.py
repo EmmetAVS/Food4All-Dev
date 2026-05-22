@@ -62,6 +62,8 @@ class UpdateUserRequest(BaseModel):
     new_profile_picture: Optional[str] = None
     new_branch: Optional[str] = None
 
+import main_legacy as legacy
+
 app = FastAPI()
 
 app.add_middleware(
@@ -354,6 +356,38 @@ async def api_execute(code: str, request: Request, token: Optional[str] = Cookie
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=400)
 
+_REACT = lambda: FileResponse("frontend/dist/index.html", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+
+@app.get("/")
+async def home(request: Request, token: Optional[str] = Cookie(None)):
+    if legacy.is_legacy(request):
+        return legacy.home(request, token, request.app.state.db)
+    return _REACT()
+
+@app.get("/view")
+async def view(request: Request):
+    if legacy.is_legacy(request):
+        return legacy.view()
+    return _REACT()
+
+@app.get("/login")
+async def login_page(request: Request):
+    if legacy.is_legacy(request):
+        return legacy.login(request)
+    return _REACT()
+
+@app.get("/signup")
+async def signup_page(request: Request):
+    if legacy.is_legacy(request):
+        return legacy.signup(request)
+    return _REACT()
+
+@app.get("/admin")
+async def admin_page(request: Request, token: Optional[str] = Cookie(None)):
+    if legacy.is_legacy(request):
+        return legacy.admin(request, token, request.app.state.db)
+    return _REACT()
+
 @app.get("/{full_path:path}", response_class=HTMLResponse)
 async def serve_react(full_path: str):  # noqa: ARG001
-    return FileResponse("frontend/dist/index.html", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+    return _REACT()

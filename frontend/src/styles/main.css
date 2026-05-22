@@ -134,9 +134,7 @@
 .sidebar-update-btn {
   all: unset;
   display: block;
-  width: 100%;
-  text-align: center;
-  padding: 0.6rem;
+  padding: 0.6rem 1rem;
   border-radius: var(--radius-sm);
   background: var(--accent);
   color: #0d0f14;
@@ -633,16 +631,73 @@ input[type=number] { -moz-appearance: textfield; }
   opacity: 0.3;
 }
 
-/* ── Mobile bottom filter bar ────────────────── */
+/* ── Mobile top filter bar ───────────────────── */
 .mobile-filter-bar {
   display: none;
-  position: sticky;
-  bottom: 0;
+  flex-direction: column;
   background: var(--bg-elevated);
-  border-top: 1px solid var(--border);
-  padding: 0.75rem 1rem;
-  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
   z-index: 50;
+  flex-shrink: 0;
+}
+
+.mobile-filter-pills {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-filter-pills::-webkit-scrollbar { display: none; }
+
+.mobile-filter-dates {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.mobile-filter-date-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.78rem;
+  -webkit-appearance: none;
+}
+
+.mobile-filter-date-input:focus {
+  border-color: var(--border-focus);
+  outline: none;
+}
+
+.mobile-filter-date-sep {
+  font-size: 0.85rem;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.mobile-filter-apply {
+  all: unset;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: #0d0f14;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.mobile-filter-apply:hover {
+  background: var(--accent-hover);
 }
 
 .mobile-filter-pill {
@@ -665,6 +720,15 @@ input[type=number] { -moz-appearance: textfield; }
   background: var(--accent-dim);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* Mobile collections header (always visible, above scroll area) */
+.mobile-cards-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem 0.4rem;
+  flex-shrink: 0;
 }
 
 /* Mobile collections card view */

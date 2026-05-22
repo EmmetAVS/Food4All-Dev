@@ -32,6 +32,11 @@ function StatusBadge({ status }) {
 const INIT_START = '1970-01-01'
 const INIT_END   = '9999-12-30'
 
+function offsetDate(ts, days) {
+  const d = new Date(ts + days * 86400000)
+  return d.toISOString().split('T')[0]
+}
+
 // ── Chevron icon ──────────────────────────────
 function Chevron({ open }) {
   return (
@@ -84,7 +89,19 @@ export default function Collections() {
       setBranches(b)
       const initBranch = me.branch && me.branch in b ? me.branch : null
       setActiveBranch(initBranch)
-      await fetchAndRender(initBranch, INIT_START, INIT_END, b)
+
+      const colData = await api.collections()
+      const times = Object.values(colData.collections).map(c => c.time)
+      let initStart = INIT_START
+      let initEnd   = INIT_END
+      if (times.length > 0) {
+        initStart = offsetDate(Math.min(...times), -1)
+        initEnd   = offsetDate(Math.max(...times),  1)
+        setStartDate(initStart)
+        setEndDate(initEnd)
+      }
+
+      await fetchAndRender(initBranch, initStart, initEnd, b)
     } catch {
       navigate('/login')
     }
@@ -315,6 +332,39 @@ export default function Collections() {
 
         {/* ── Main content ─────────────────── */}
         <div className="content">
+          {/* Mobile filter bar — shown above charts on mobile */}
+          <div className="mobile-filter-bar">
+            <div className="mobile-filter-pills">
+              <button
+                className={`mobile-filter-pill${activeBranch === null ? ' active' : ''}`}
+                onClick={() => handleBranchFilter('ALL')}
+              >All</button>
+              {sortedBranchEntries.map(([key, b]) => (
+                <button
+                  key={key}
+                  className={`mobile-filter-pill${activeBranch === key ? ' active' : ''}`}
+                  onClick={() => handleBranchFilter(key)}
+                >{b.acronym}</button>
+              ))}
+            </div>
+            <div className="mobile-filter-dates">
+              <input
+                className="mobile-filter-date-input"
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+              />
+              <span className="mobile-filter-date-sep">–</span>
+              <input
+                className="mobile-filter-date-input"
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+              />
+              <button className="mobile-filter-apply" onClick={handleUpdate}>Apply</button>
+            </div>
+          </div>
+
           {/* Charts */}
           <div className="charts">
             {charts.length === 0 ? (
@@ -376,6 +426,12 @@ export default function Collections() {
             </div>
           </div>
 
+          {/* Mobile collections header — stays above the scroll area */}
+          <div className="mobile-cards-header">
+            <span className="list-title">Collections</span>
+            <span className="list-count">{visibleCollections.length} records</span>
+          </div>
+
           {/* Mobile cards view */}
           <div className="mobile-cards">
             {visibleCollections.length === 0 ? (
@@ -413,20 +469,6 @@ export default function Collections() {
             })}
           </div>
 
-          {/* Mobile filter bar */}
-          <div className="mobile-filter-bar">
-            <button
-              className={`mobile-filter-pill${activeBranch === null ? ' active' : ''}`}
-              onClick={() => handleBranchFilter('ALL')}
-            >All</button>
-            {sortedBranchEntries.map(([key, b]) => (
-              <button
-                key={key}
-                className={`mobile-filter-pill${activeBranch === key ? ' active' : ''}`}
-                onClick={() => handleBranchFilter(key)}
-              >{b.acronym}</button>
-            ))}
-          </div>
         </div>
       </div>
 

@@ -7,32 +7,6 @@
 
 /* ── Phablet (≤ 768px) ───────────────────────── */
 @media (max-width: 768px) {
-  /* Break the fixed-height viewport lock so the page can scroll */
-  html, body {
-    height: auto;
-    min-height: 100%;
-    overflow-y: auto;
-  }
-
-  #root {
-    height: auto;
-    min-height: 100vh;
-  }
-
-  .main-container {
-    overflow: visible;
-  }
-
-  .content {
-    overflow: visible;
-    height: auto;
-  }
-
-  .list {
-    flex: none;
-    height: auto;
-  }
-
   /* Hide sidebar, show mobile filter bar */
   .sidebar-menu {
     display: none;
@@ -40,25 +14,39 @@
 
   .mobile-filter-bar {
     display: flex;
-    overflow-x: auto;
-    scrollbar-width: none;
   }
-  .mobile-filter-bar::-webkit-scrollbar { display: none; }
 
-  /* Hide desktop table; show cards */
-  .list-headers { display: none; }
-  .list-items   { display: none; }
-  .mobile-cards { display: flex; }
+  /* Hide desktop table entirely */
+  .list { display: none; }
 
-  /* Compact charts */
+  .mobile-cards-header {
+    display: flex;
+  }
+
+  .mobile-cards {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* Keep charts in one horizontal row, shrunk */
   .charts {
-    grid-template-columns: 1fr;
-    padding: 0.75rem;
-    gap: 0.75rem;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .chart {
+    padding: 0.6rem;
+  }
+
+  .chart label {
+    font-size: 0.68rem;
   }
 
   .chart img {
-    height: 140px;
+    height: 100px;
   }
 
   /* Navbar tweaks */
@@ -83,11 +71,6 @@
   /* Show mobile FAB for filter */
   .mobile-fab { display: flex; }
 
-  /* List padding */
-  .list {
-    padding: 0 0.75rem 5.5rem;
-  }
-
   /* Modal full-width on small screens */
   .modal {
     width: calc(100vw - 1.5rem);
@@ -103,8 +86,8 @@
   }
 
   .charts {
-    padding: 0.5rem;
-    gap: 0.5rem;
+    padding: 0.4rem;
+    gap: 0.3rem;
   }
 
   .auth-card {
@@ -114,10 +97,6 @@
 
   .auth-title {
     font-size: 1.25rem;
-  }
-
-  .list {
-    padding: 0 0.5rem 5.5rem;
   }
 
   .mobile-collection-card {
