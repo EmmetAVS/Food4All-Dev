@@ -252,11 +252,11 @@ export default function Collections() {
       closeModal()
       let newStart = startDate
       let newEnd = endDate
-      if (date < newStart) {
+      if (date <= newStart) {
         newStart = offsetDate(new Date(date).getTime(), -1)
         setStartDate(newStart)
       }
-      if (date > newEnd) {
+      if (date >= newEnd) {
         newEnd = offsetDate(new Date(date).getTime(), 1)
         setEndDate(newEnd)
       }
