@@ -211,7 +211,7 @@ export default function Collections() {
   }
 
   function handleDateChange(dateStr) {
-    const isPlanned = dateStr >= todayStr()
+    const isPlanned = dateStr > todayStr()
     setForm(f => ({ ...f, date: dateStr, ...(isPlanned ? { status: 'planned' } : {}) }))
   }
 
@@ -278,7 +278,7 @@ export default function Collections() {
   }
 
   const isAdmin      = userData?.is_admin || false
-  const isPlannedDate = form.date >= todayStr()
+  const isPlannedDate = form.date > todayStr()
 
   const sortedBranchEntries = Object.entries(branches).sort(([a], [b]) => {
     if (a === userData?.branch) return -1
