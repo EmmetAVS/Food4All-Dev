@@ -250,7 +250,17 @@ export default function Collections() {
         msgRef.current?.show('Collection updated', 'green')
       }
       closeModal()
-      await fetchAndRender(activeBranch, startDate, endDate)
+      let newStart = startDate
+      let newEnd = endDate
+      if (date < newStart) {
+        newStart = offsetDate(new Date(date).getTime(), -1)
+        setStartDate(newStart)
+      }
+      if (date > newEnd) {
+        newEnd = offsetDate(new Date(date).getTime(), 1)
+        setEndDate(newEnd)
+      }
+      await fetchAndRender(activeBranch, newStart, newEnd)
     } catch (e) {
       msgRef.current?.show(e.message || 'Failed to save', 'red')
     }
